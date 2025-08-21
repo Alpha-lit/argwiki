@@ -1,0 +1,17 @@
+{% extends 'story/base.html' %}
+{% block title %}Welcome back{% endblock %}
+{% block content %}
+<div class="text-center mt-20">
+    <h1 class="text-3xl mb-6">You were last in <strong>{{ last_room.title }}</strong>.</h1>
+    <div class="space-x-4">
+        <a href="{% url 'room' slug=last_room.slug %}"
+           class="px-6 py-3 bg-green-600 hover:bg-green-700 rounded">
+           Continue
+        </a>
+        <a href="{% url 'restart_progress' %}"
+           class="px-6 py-3 bg-red-600 hover:bg-red-700 rounded">
+           Start new story
+        </a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,83 @@
+{% extends 'story/base.html' %}
+{% load static %}
+
+{% block title %}{{ room.tab_title|default:room.title }}{% endblock %}
+
+{% block content %}
+<div>
+    <h2 class="text-2xl font-bold mb-4">{{ room.title }}</h2>
+    <div class="mb-6">{{ room.description|safe|linebreaks }}</div>
+
+    {% if room.image %}
+        <img src="{{ room.image.url }}" class="mb-4 rounded" alt="{{ room.title }}">
+    {% endif %}
+
+    {% if room.sfx_enter %}
+    <audio id="room-sfx" src="{% static 'story/sfx/'|add:room.sfx_enter %}" autoplay></audio>
+    {% endif %}
+
+    <!-- Continue / Restart overlay (only on first room for returning users) -->
+    {% if show_continue_overlay %}
+    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+        <div class="bg-gray-900 p-8 rounded shadow-xl text-center">
+            <p class="text-lg mb-4">You were last in <strong>{{ last_room.title }}</strong>.</p>
+            <div class="space-x-4">
+                <a href="{% url 'room' slug=last_room.slug %}"
+                   class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded">
+                   Continue
+                </a>
+                <a href="{% url 'restart_progress' %}"
+                   class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded">
+                   Restart
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Choices -->
+    {% for choice in choices %}
+        <form method="post" action="{% url 'pick_choice' choice.id %}" class="space-y-2">
+            {% csrf_token %}
+            <button type="submit"
+                    class="block w-full p-4 bg-gray-800 hover:bg-gray-700 rounded transition">
+                {{ choice.text }}
+            </button>
+        </form>
+    {% empty %}
+        <p class="text-gray-400 italic">No choices available.</p>
+    {% endfor %}
+    <!-- Navigation -->
+    <div class="mt-8 border-t border-gray-700 pt-4 text-sm text-gray-400 space-x-4">
+        {% if back_slug %}
+            <a href="{% url 'room' slug=back_slug %}"
+               class="hover:text-white transition">
+                ← Back
+            </a>
+        {% endif %}
+        {% if request.COOKIES.progress %}
+            <a href="{% url 'restart_progress' %}"
+               class="hover:text-white transition">
+                Reset Progress
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+{% include 'story/components/audio-toggle.html' %}
+
+<!-- Small JS helper to clear the cue-sfx cookie after playing -->
+<script>
+(function () {
+    const sfx = document.cookie
+        .split("; ")
+        .find(row => row.startsWith("_cue_sfx="));
+    if (sfx) {
+        const url = sfx.split("=")[1];
+        const audio = new Audio("{% static 'story/sfx/' %}" + url);
+        audio.play();
+        document.cookie = "_cue_sfx=; Max-Age=0; path=/";
+    }
+})();
+</script>
+{% endblock %}
