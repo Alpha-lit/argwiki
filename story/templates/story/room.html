@@ -12,9 +12,7 @@
         <img src="{{ room.image.url }}" class="mb-4 rounded" alt="{{ room.title }}">
     {% endif %}
 
-    {% if room.sfx_enter %}
-    <audio id="room-sfx" src="{% static 'story/sfx/'|add:room.sfx_enter %}" autoplay></audio>
-    {% endif %}
+
 
     <!-- Continue / Restart overlay (only on first room for returning users) -->
     {% if show_continue_overlay %}
@@ -64,7 +62,11 @@
     </div>
 </div>
 
-{% include 'story/components/audio-toggle.html' %}
+{% if room.sfx_enter %}
+  <input type="hidden" id="room-sfx-url" value="{{ room.sfx_enter.url }}">
+{% endif %}
+
+
 
 <!-- Small JS helper to clear the cue-sfx cookie after playing -->
 <script>

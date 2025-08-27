@@ -1,0 +1,29 @@
+{% extends 'story/base.html' %}
+
+{% block title %}News{% endblock %}
+ 
+{% block content %}
+<h2 class="creepy-font text-3xl text-red-500 mb-6">News & Updates</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  {% for article in news_items %}
+  <a href="{% url 'news_detail' article.pk %}" 
+     class="block bg-gray-900 p-5 rounded border border-red-700 shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105 relative overflow-hidden">
+    
+    <!-- Flicker / Glitch effect on title -->
+    <h3 class="special-font text-xl mb-2 glitch-effect" data-text="{{ article.title }}">{{ article.title }}</h3>
+    
+    <!-- Summary with spooky effect -->
+    <p class="text-gray-400 line-clamp-3">{{ article.content|truncatewords:25 }}</p>
+    
+    <!-- Published date -->
+    <span class="text-red-500 text-sm italic absolute bottom-2 right-3">Published: {{ article.published_at|date:"M d, Y" }}</span>
+
+    <!-- Optional blood-drip effect -->
+    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
+  </a>
+  {% empty %}
+  <p class="text-gray-500 italic">No news found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+{% extends 'story/base.html' %}
+
+{% block title %}{{ news_item.title }}{% endblock %}
+
+{% block content %}
+<h2 class="creepy-font text-3xl text-red-500 mb-6">{{ news_item.title }}</h2>
+
+{% if news_item.image %}
+<img src="{{ news_item.image.url }}" class="mb-4 rounded shadow-lg" alt="{{ news_item.title }}">
+{% endif %}
+
+<div class="special-font text-gray-300 mb-4">{{ news_item.content|linebreaks }}</div>
+
+<span class="text-red-500 text-sm italic">Published: {{ news_item.published_at|date:"M d, Y" }}</span>
+
+<a href="{% url 'news_list' %}" class="mt-6 inline-block text-red-500 hover:text-red-400 transition special-font">
+  ← Back to News
+</a>
+{% endblock %}

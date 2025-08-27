@@ -1,0 +1,19 @@
+{% extends 'story/base.html' %}
+
+{% block title %}Tapes{% endblock %}
+
+{% block content %}
+<h2 class="creepy-font text-3xl text-red-500 mb-6">Available Tapes</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+  {% for tape in tapes %}
+  <a href="{% url 'tape_detail' tape.pk %}" class="block bg-gray-900 p-5 rounded hover:bg-gray-800 border border-red-700 shadow-md transition-transform transform hover:scale-105">
+    <h3 class="special-font text-xl mb-2 glitch-effect" data-text="{{ tape.title }}">{{ tape.title }}</h3>
+    <p class="text-gray-400 line-clamp-3">{{ tape.description }}</p>
+  </a>
+  {% empty %}
+  <p class="text-gray-500 italic">No tapes found.</p>
+  {% endfor %}
+  
+</div>
+{% endblock %}

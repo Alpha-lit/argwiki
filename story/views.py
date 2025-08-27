@@ -1,7 +1,7 @@
 # story/views.py
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponseBadRequest
-from .models import Room, Choice
+from .models import Room, Choice,Tape, Character, Cast, News
 
 # ---------- helpers ----------
 def _csv_to_set(csv_str):
@@ -119,3 +119,43 @@ def restart_progress(request):
     resp.delete_cookie("flags", path="/")
     resp.delete_cookie("history", path="/")
     return resp
+def tape_list(request):
+    tapes = Tape.objects.all()
+    return render(request, "story/tapes/list.html", {"tapes": tapes})
+
+def tape_detail(request, pk):
+    tape = get_object_or_404(Tape, pk=pk)
+    return render(request, "story/tapes/detail.html", {"tape": tape})
+
+
+# ---- Characters ----
+def character_list(request):
+    characters = Character.objects.all()
+    return render(request, "story/characters/list.html", {"characters": characters})
+
+def character_detail(request, pk):
+    character = get_object_or_404(Character, pk=pk)
+    return render(request, "story/characters/detail.html", {"character": character})
+
+
+# ---- Cast ----
+def cast_list(request):
+    cast_members = Cast.objects.all()
+    return render(request, "story/cast/list.html", {"cast_members": cast_members})
+
+def cast_detail(request, pk):
+    cast_member = get_object_or_404(Cast, pk=pk)
+    other_cast = Cast.objects.exclude(pk=pk)  # prepare this in Python, not template
+    return render(
+        request,
+        "story/cast/detail.html",
+        {"cast_member": cast_member, "other_cast": other_cast},
+    )
+# ---- News ----
+def news_list(request):
+    news_items = News.objects.all().order_by("-published_at")
+    return render(request, "story/news/list.html", {"news_items": news_items})
+
+def news_detail(request, pk):
+    news_item = get_object_or_404(News, pk=pk)
+    return render(request, "story/news/detail.html", {"news_item": news_item})

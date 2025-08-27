@@ -1,0 +1,30 @@
+{% extends 'story/base.html' %}
+
+{% block title %}{{ tape.title }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <h2 class="creepy-font text-4xl text-red-500 flicker">{{ tape.title }}</h2>
+
+  {% if tape.image %}
+  <img src="{{ tape.image.url }}" alt="{{ tape.title }}" class="rounded border border-red-700 shadow-lg">
+  {% endif %}
+
+  <div class="special-font text-gray-300">{{ tape.description|linebreaks }}</div>
+
+  {% if tape.audio %}
+  <audio controls class="w-full rounded border border-red-700 mt-4">
+    <source src="{{ tape.audio.url }}" type="audio/mpeg">
+  </audio>
+  {% endif %}
+
+  {% if related_tapes %}
+  <h3 class="creepy-font text-2xl text-red-400 mt-6">Related Tapes</h3>
+  <ul class="list-disc ml-6 text-gray-400">
+    {% for related in related_tapes %}
+    <li><a href="{% url 'tape_detail' related.slug %}" class="hover:text-red-500 transition">{{ related.title }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

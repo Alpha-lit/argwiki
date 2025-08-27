@@ -1,0 +1,24 @@
+{% extends 'story/base.html' %}
+
+{% block title %}{{ character.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <h2 class="creepy-font text-4xl text-red-500 flicker">{{ character.name }}</h2>
+
+  {% if character.image %}
+  <img src="{{ character.image.url }}" alt="{{ character.name }}" class="rounded border border-red-700 shadow-lg">
+  {% endif %}
+
+  <div class="special-font text-gray-300">{{ character.description|linebreaks }}</div>
+
+  {% if character.related %}
+  <h3 class="creepy-font text-2xl text-red-400 mt-6">Related Characters</h3>
+  <ul class="list-disc ml-6 text-gray-400">
+    {% for related in character.related %}
+    <li><a href="{% url 'character_detail' related.slug %}" class="hover:text-red-500 transition">{{ related.name }}</a></li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

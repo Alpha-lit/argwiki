@@ -1,0 +1,28 @@
+{% extends 'story/base.html' %}
+
+{% block title %}{{ cast_member.name }}{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+  <h2 class="creepy-font text-4xl text-red-500 flicker">{{ cast_member.name }}</h2>
+
+  {% if cast_member.image %}
+  <img src="{{ cast_member.image.url }}" alt="{{ cast_member.name }}" class="rounded border border-red-700 shadow-lg">
+  {% endif %}
+
+  <div class="special-font text-gray-300">{{ cast_member.role|linebreaks }}</div>
+
+  {% if other_cast %}
+  <h3 class="creepy-font text-2xl text-red-400 mt-6">Other Cast</h3>
+  <ul class="list-disc ml-6 text-gray-400">
+    {% for related in other_cast %}
+    <li>
+      <a href="{% url 'cast_detail' related.pk %}" class="hover:text-red-500 transition">
+        {{ related.name }}
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}

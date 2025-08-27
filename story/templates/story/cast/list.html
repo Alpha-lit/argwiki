@@ -1,0 +1,27 @@
+{% extends 'story/base.html' %}
+
+{% block title %}Cast Members{% endblock %}
+
+{% block content %}
+<h2 class="creepy-font text-3xl text-red-500 mb-6">Meet the Cast</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  {% for cast_member in cast_members %}
+  <a href="{% url 'cast_detail' cast_member.pk %}"
+     class="block bg-gray-900 p-5 rounded hover:bg-gray-800 border border-red-700 shadow-md transition-transform transform hover:scale-105">
+     
+    {% if cast_member.image %}
+    <img src="{{ cast_member.image.url }}" alt="{{ cast_member.name }}" 
+         class="rounded mb-3 border border-red-700 shadow-lg">
+    {% endif %}
+
+    <h3 class="special-font text-xl mb-1 glitch-effect" data-text="{{ cast_member.name }}">
+      {{ cast_member.name }}
+    </h3>
+    <p class="text-gray-400 italic">{{ cast_member.role }}</p>
+  </a>
+  {% empty %}
+  <p class="text-gray-500 italic">No cast members found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

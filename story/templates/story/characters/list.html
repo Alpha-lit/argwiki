@@ -1,0 +1,18 @@
+{% extends 'story/base.html' %}
+
+{% block title %}Characters{% endblock %}
+
+{% block content %}
+<h2 class="creepy-font text-3xl text-red-500 mb-6">Characters</h2>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+  {% for char in characters %}
+  <a href="{% url 'character_detail' char.pk %}" class="block bg-gray-900 p-4 rounded hover:bg-gray-800 border border-red-700 shadow-md hover:scale-105 transform transition">
+    <h3 class="special-font text-lg mb-1 glitch-effect" data-text="{{ char.name }}">{{ char.name }}</h3>
+    <p class="text-gray-400 line-clamp-3">{{ char.description }}</p>
+  </a>
+  {% empty %}
+  <p class="text-gray-500 italic">No characters found.</p>
+  {% endfor %}
+</div>
+{% endblock %}

@@ -1,23 +1,32 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const toggle = document.getElementById("audio-toggle");
-    const audioEls = document.querySelectorAll("audio");
+const sfxToggle = document.getElementById("sfx-toggle");
+const savedPreference = localStorage.getItem("sfxEnabled") === "true";
 
-    if (toggle) {
-        toggle.addEventListener("click", () => {
-            const enabled = toggle.dataset.enabled === "true";
-            toggle.dataset.enabled = !enabled;
-            localStorage.setItem("sfxEnabled", !enabled);
-            audioEls.forEach(audio => {
-                audio.muted = enabled;
-            });
-            toggle.innerText = enabled ? "🔊 Enable SFX" : "🔇 Disable SFX";
-        });
+const roomSfxInput = document.getElementById("room-sfx-url");
+let sfxAudio = null;
 
-        const savedState = localStorage.getItem("sfxEnabled");
-        if (savedState === "false") {
-            audioEls.forEach(audio => { audio.muted = true; });
-            toggle.dataset.enabled = false;
-            toggle.innerText = "🔊 Enable SFX";
-        }
+if (roomSfxInput) {
+    sfxAudio = new Audio(roomSfxInput.value);
+    sfxAudio.preload = "auto";
+}
+
+// Restore toggle state
+if (sfxToggle) {
+    sfxToggle.checked = savedPreference;
+
+    // Auto-play when entering a room (if enabled)
+    if (savedPreference && sfxAudio) {
+        sfxAudio.play().catch(() => {});
     }
-});
+
+    sfxToggle.addEventListener("change", () => {
+        if (!sfxAudio) return;
+        if (sfxToggle.checked) {
+            sfxAudio.play().catch(() => {});
+            localStorage.setItem("sfxEnabled", "true");
+        } else {
+            sfxAudio.pause();
+            sfxAudio.currentTime = 0;
+            localStorage.setItem("sfxEnabled", "false");
+        }
+    });
+}

@@ -8,9 +8,13 @@ class Room(models.Model):
     image = models.ImageField(upload_to="rooms/", blank=True, null=True)
 
     # Optional SFX to play when entering this room (short clip only, no music)
-    sfx_enter = models.CharField(
-        max_length=200, blank=True, help_text="Relative path under static/story/sfx, e.g. 'door_creak.mp3'"
+    sfx_enter = models.FileField(
+        upload_to="sfx/rooms/",
+        blank=True,
+        null=True,
+        help_text="Upload a short sound effect (mp3, wav, ogg)"
     )
+
 
     # Tab title override when in this room (optional)
     tab_title = models.CharField(max_length=60, blank=True)
@@ -37,3 +41,41 @@ class Choice(models.Model):
 
     def __str__(self):
         return f"{self.room} -> {self.next_room} ({self.text[:25]})"
+
+class Tape(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    release_date = models.DateField(null=True, blank=True)
+    video_file = models.FileField(upload_to="tapes/", null=True, blank=True)
+
+    def __str__(self):
+        return self.title
+
+
+class Character(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    image = models.ImageField(upload_to="characters/", null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Cast(models.Model):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    bio = models.TextField(null=True, blank=True)
+    image = models.ImageField(upload_to="cast/", null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.name} as {self.role}"
+
+
+class News(models.Model):
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    published_at = models.DateTimeField(auto_now_add=True)
+    image = models.ImageField(upload_to="news/", null=True, blank=True)
+
+    def __str__(self):
+        return self.title

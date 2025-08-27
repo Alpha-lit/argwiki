@@ -11,211 +11,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Special+Elite&family=Creepster&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'story/css/styles.css' %}">
   
-  <style>
-    body {
-        background-image: 
-            radial-gradient(circle at 10% 20%, rgba(120, 0, 0, 0.1) 0%, transparent 20%),
-            radial-gradient(circle at 90% 60%, rgba(80, 0, 0, 0.1) 0%, transparent 20%);
-        overflow-x: hidden;
-    }
-    
-    .special-font {
-        font-family: 'Special Elite', cursive;
-    }
-    
-    .creepy-font {
-        font-family: 'Creepster', cursive;
-        letter-spacing: 1px;
-    }
-    
-    .nav-item {
-        position: relative;
-        padding: 0.5rem 1rem;
-        margin: 0 0.25rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 1;
-    }
-    
-    .nav-item::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: #1a0000;
-        z-index: -1;
-        transform: scaleX(0);
-        transform-origin: right;
-        transition: transform 0.3s ease;
-    }
-    
-    .nav-item:hover::before {
-        transform: scaleX(1);
-        transform-origin: left;
-    }
-    
-    .nav-item:hover {
-        color: #ff0000;
-        text-shadow: 0 0 5px #ff0000, 0 0 10px #ff0000;
-    }
-    
-    .nav-item::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        width: 0;
-        height: 1px;
-        background: #ff0000;
-        transition: all 0.3s ease;
-    }
-    
-    .nav-item:hover::after {
-        width: 100%;
-        left: 0;
-    }
-    
-    .separator {
-        color: #500;
-        margin: 0 0.5rem;
-        text-shadow: 0 0 3px #300;
-    }
-    
-    .flicker {
-        animation: flicker 3s infinite alternate;
-    }
-    
-    @keyframes flicker {
-        0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
-            opacity: 1;
-        }
-        20%, 24%, 55% {
-            opacity: 0.4;
-        }
-    }
-    
-    .blood-drip {
-        position: absolute;
-        top: 100%;
-        width: 1px;
-        height: 0;
-        background: linear-gradient(to bottom, #f00, #500);
-        opacity: 0;
-        transition: all 1s ease;
-    }
-    
-    .nav-item:hover .blood-drip {
-        height: 20px;
-        opacity: 0.7;
-    }
-    
-    .blood-drip:nth-child(1) {
-        left: 20%;
-    }
-    
-    .blood-drip:nth-child(2) {
-        left: 50%;
-    }
-    
-    .blood-drip:nth-child(3) {
-        left: 80%;
-    }
-    
-    .whisper {
-        position: absolute;
-        opacity: 0;
-        transition: opacity 0.3s ease;
-    }
-    
-    .nav-item:hover .whisper {
-        opacity: 1;
-    }
-    
-    .glitch-effect {
-        position: relative;
-        display: inline-block;
-    }
-    
-    .glitch-effect::before,
-    .glitch-effect::after {
-        content: attr(data-text);
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        opacity: 0;
-    }
-    
-    .glitch-effect::before {
-        color: #0ff;
-        z-index: -1;
-        transform: translateX(2px);
-    }
-    
-    .glitch-effect::after {
-        color: #f0f;
-        z-index: -2;
-        transform: translateX(-2px);
-    }
-    
-    .nav-item:hover .glitch-effect::before {
-        animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
-        opacity: 0.7;
-    }
-    
-    .nav-item:hover .glitch-effect::after {
-        animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
-        opacity: 0.7;
-    }
-    
-    @keyframes glitch {
-        0% {
-            transform: translate(0);
-        }
-        20% {
-            transform: translate(-2px, 2px);
-        }
-        40% {
-            transform: translate(-2px, -2px);
-        }
-        60% {
-            transform: translate(2px, 2px);
-        }
-        80% {
-            transform: translate(2px, -2px);
-        }
-        100% {
-            transform: translate(0);
-        }
-    }
-    
-    .content-box {
-        background: rgba(10, 0, 0, 0.7);
-        border: 1px solid #300;
-        box-shadow: 0 0 15px rgba(255, 0, 0, 0.2);
-    }
-    
-    .btn {
-        background: #200;
-        border: 1px solid #500;
-        transition: all 0.3s ease;
-    }
-    
-    .btn:hover {
-        background: #500;
-        box-shadow: 0 0 10px #f00;
-    }
-    
-    /* Full screen layout */
-    .full-width-container {
-        width: 100vw;
-        margin-left: calc(-50vw + 50%);
-        margin-right: calc(-50vw + 50%);
-    }
-  </style>
 </head>
 <body class="h-full text-zinc-100 selection:bg-red-600/60">
   <!-- Full width header with navigation -->
@@ -225,101 +20,75 @@
         <h1 class="creepy-font text-3xl text-red-600 flicker">THE DISNEY WIKI</h1>
         <div class="flex items-center">
           <span class="text-zinc-500 mr-2 special-font">SFX</span>
-          <div class="relative w-12 h-6 bg-zinc-800 rounded-full">
-            <div class="absolute left-1 top-1 w-4 h-4 bg-red-600 rounded-full transition-transform"></div>
-          </div>
+          <label class="relative inline-flex items-center cursor-pointer">
+            <input type="checkbox" id="sfx-toggle" class="sr-only peer">
+            {% if room.sfx_enter %}
+            <input type="hidden" id="room-sfx-url" value="{{ room.sfx_enter.url }}">
+            {% endif %}
+            <div class="w-12 h-6 bg-zinc-800 rounded-full peer peer-checked:bg-red-600 relative">
+              <div class="absolute top-1 left-1 w-4 h-4 bg-red-600 rounded-full transition-transform peer-checked:translate-x-6"></div>
+            </div>
+          </label>
         </div>
       </div>
       
-      <!-- Desktop Navigation -->
-      <nav class="hidden md:flex justify-center items-center special-font text-lg">
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="Episodes">Episodes</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">watch... if you dare</div>
-        </div>
-        <span class="separator">|</span>
-        
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="Games">Games</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">play at your own risk</div>
-        </div>
-        <span class="separator">|</span>
-        
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="Cast">Cast</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">they're always watching</div>
-        </div>
-        <span class="separator">|</span>
-        
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="Characters">Characters</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">some are not human</div>
-        </div>
-        <span class="separator">|</span>
-        
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="Places">Places</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">abandon all hope</div>
-        </div>
-        <span class="separator">|</span>
-        
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="Store">Store</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">your soul is the price</div>
-        </div>
-        <span class="separator">|</span>
-        
-        <div class="nav-item">
-          <span class="glitch-effect" data-text="News">News</span>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="blood-drip"></div>
-          <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">the truth is out there</div>
-        </div>
-      </nav>
-      
-      <!-- Mobile Navigation Toggle -->
-      <div class="md:hidden flex justify-center mt-4">
-        <button id="mobile-menu-toggle" class="px-4 py-2 bg-zinc-900 border border-zinc-700 special-font flex items-center">
-          <span>Menu</span>
-          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-          </svg>
-        </button>
-      </div>
-      
-      <!-- Mobile Navigation Menu -->
-      <div id="mobile-menu" class="mobile-menu md:hidden special-font mt-2 bg-zinc-900 border border-zinc-700 rounded max-h-0 overflow-hidden transition-all duration-500">
-        <div class="py-2">
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Episodes</a>
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Games</a>
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Cast</a>
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Characters</a>
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Places</a>
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Store</a>
-          <a href="#" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">News</a>
-        </div>
-      </div>
-    </div>
+<!-- Desktop Navigation -->
+<nav class="hidden md:flex justify-center items-center special-font text-lg">
+  <div class="nav-item">
+    <a href="{% url 'tape_list' %}">
+      <span class="glitch-effect" data-text="Tapes">Tapes</span>
+    </a>
+    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
+    <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">do not rewind...</div>
   </div>
+  <span class="separator">|</span>
+
+  <div class="nav-item">
+    <a href="{% url 'character_list' %}">
+      <span class="glitch-effect" data-text="Characters">Characters</span>
+    </a>
+    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
+    <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">some are not human</div>
+  </div>
+  <span class="separator">|</span>
+
+  <div class="nav-item">
+    <a href="{% url 'cast_list' %}">
+      <span class="glitch-effect" data-text="Cast">Cast</span>
+    </a>
+    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
+    <!-- <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">they're always watching</div> -->
+  </div>
+  <span class="separator">|</span>
+
+  <div class="nav-item">
+    <a href="{% url 'news_list' %}">
+      <span class="glitch-effect" data-text="News">News</span>
+    </a>
+    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
+    <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">the truth is out there</div>
+  </div>
+</nav>
+
+<!-- Mobile Navigation Toggle -->
+<div class="md:hidden flex justify-center mt-4">
+  <button id="mobile-menu-toggle" class="px-4 py-2 bg-zinc-900 border border-zinc-700 special-font flex items-center">
+    <span>Menu</span>
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+    </svg>
+  </button>
+</div>
+
+<!-- Mobile Navigation Menu -->
+<div id="mobile-menu" class="mobile-menu md:hidden special-font mt-2 bg-zinc-900 border border-zinc-700 rounded max-h-0 overflow-hidden transition-all duration-500">
+  <div class="py-2">
+    <a href="{% url 'tape_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Tapes</a>
+    <a href="{% url 'character_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Characters</a>
+    <a href="{% url 'cast_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Cast</a>
+    <a href="{% url 'news_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">News</a>
+  </div>
+</div>
 
   <main class="min-h-screen max-w-6xl mx-auto p-4">
     <div id="content" class="animate-fade content-box p-6 rounded-lg mt-6">
@@ -333,9 +102,9 @@
             <img src="{{ room.image.url }}" class="mb-4 rounded" alt="{{ room.title }}">
           {% endif %}
 
-          {% if room.sfx_enter %}
-          <audio id="room-sfx" src="{% static 'story/sfx/'|add:room.sfx_enter %}" autoplay></audio>
-          {% endif %}
+          <!-- {% if room.sfx_enter %}
+          <audio id="room-sfx" src="{{ room.sfx_enter.url }}" autoplay></audio>
+          {% endif %} -->
 
           <!-- Continue / Restart overlay (only on first room for returning users) -->
           {% if show_continue_overlay %}
@@ -386,7 +155,7 @@
           </div>
         </div>
 
-        {% include 'story/components/audio-toggle.html' %}
+        <!-- {% include 'story/components/audio-toggle.html' %} -->
 
         <!-- Small JS helper to clear the cue-sfx cookie after playing -->
         <script>
