@@ -1,72 +1,228 @@
 {% extends 'story/base.html' %}
 {% load static %}
-
 {% block title %}{{ room.tab_title|default:room.title }}{% endblock %}
 
 {% block content %}
-<div>
-    <h2 class="text-2xl font-bold mb-4">{{ room.title }}</h2>
-    <div class="mb-6">{{ room.description|safe|linebreaks }}</div>
-
-    {% if room.image %}
-        <img src="{{ room.image.url }}" class="mb-4 rounded" alt="{{ room.title }}">
-    {% endif %}
-
-
-
-    <!-- Continue / Restart overlay (only on first room for returning users) -->
-    {% if show_continue_overlay %}
-    <div id="overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-        <div class="bg-gray-900 p-8 rounded shadow-xl text-center">
-            <p class="text-lg mb-4">You were last in <strong>{{ last_room.title }}</strong>.</p>
-            <div class="space-x-4">
-                <a href="{% url 'room' slug=last_room.slug %}"
-                   class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded">
-                   Continue
-                </a>
-                <a href="{% url 'restart_progress' %}"
-                   class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded">
-                   Restart
-                </a>
-            </div>
+<div class="relative">
+  <!-- Room Header with Cursed Effects -->
+  <div class="relative mb-8">
+    <div class="absolute -top-4 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-700 to-transparent"></div>
+    
+    <h2 class="creepy-font text-4xl text-red-500 mb-4 flicker relative inline-block">
+      {{ room.title }}
+      <span class="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-red-700 to-transparent"></span>
+      
+      <!-- Cursed Text Effect -->
+      <span class="absolute top-0 right-0 w-12 h-full bg-black opacity-70"></span>
+    </h2>
+    
+    <!-- Blood Drips -->
+    <div class="blood-drip absolute -bottom-6 left-1/4"></div>
+    <div class="blood-drip absolute -bottom-8 left-1/2" style="animation-delay: 0.5s"></div>
+    <div class="blood-drip absolute -bottom-7 left-3/4" style="animation-delay: 1s"></div>
+  </div>
+  
+  <!-- Room Image with Enhanced Styling -->
+  {% if room.image %}
+  <div class="relative mb-8 overflow-hidden rounded-xl border-2 border-red-900/50 shadow-2xl shadow-red-900/30">
+    <img src="{{ room.image.url }}" alt="{{ room.title }}" 
+         class="w-full h-auto transform hover:scale-105 transition-transform duration-700">
+    
+    <!-- Image Overlay Effects -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent opacity-0 hover:opacity-100 mix-blend-overlay transition-opacity duration-300"></div>
+    
+    <!-- Image Corner Accents -->
+    <div class="absolute top-4 left-4 w-8 h-8 border-t-2 border-l-2 border-red-700/50"></div>
+    <div class="absolute top-4 right-4 w-8 h-8 border-t-2 border-r-2 border-red-700/50"></div>
+    <div class="absolute bottom-4 left-4 w-8 h-8 border-b-2 border-l-2 border-red-700/50"></div>
+    <div class="absolute bottom-4 right-4 w-8 h-8 border-b-2 border-r-2 border-red-700/50"></div>
+  </div>
+  {% endif %}
+  
+  <!-- Room Description with Cursed Styling -->
+  <div class="bg-black/40 backdrop-blur-sm border-l-4 border-red-700 p-6 rounded-r-lg relative overflow-hidden mb-8">
+    <div class="absolute top-0 right-0 w-32 h-32 bg-red-900/10 rounded-full -mr-16 -mt-16"></div>
+    
+    <!-- Redacted Lines -->
+    <div class="absolute top-1/4 left-0 w-1/3 h-0.5 bg-black opacity-70"></div>
+    <div class="absolute top-1/3 right-0 w-1/4 h-0.5 bg-black opacity-70"></div>
+    <div class="absolute top-1/2 left-1/4 w-1/5 h-0.5 bg-black opacity-70"></div>
+    
+    <div class="special-font text-gray-200 relative z-10 leading-relaxed text-lg">
+      {{ room.description|safe|linebreaks }}
+    </div>
+  </div>
+  
+  <!-- Continue / Restart Overlay (only on first room for returning users) -->
+  {% if show_continue_overlay %}
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50">
+    <div class="bg-gradient-to-br from-gray-900 to-black border-2 border-red-700 p-8 rounded-xl shadow-2xl shadow-red-900/50 text-center max-w-md w-full relative overflow-hidden">
+      <!-- Overlay Effects -->
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/10 to-transparent opacity-30"></div>
+      <div class="absolute top-4 left-4 w-6 h-6 rounded-full bg-red-800 border-2 border-red-900 z-20"></div>
+      <div class="absolute top-4 left-4 w-3 h-3 rounded-full bg-red-600 z-20"></div>
+      
+      <div class="relative z-10">
+        <h3 class="creepy-font text-2xl text-red-500 mb-4">Continue Your Journey</h3>
+        <p class="text-lg mb-6 special-font">You were last in <span class="text-red-400">{{ last_room.title }}</span>.</p>
+        <div class="flex flex-col sm:flex-row justify-center gap-4">
+          <a href="{% url 'room' slug=last_room.slug %}"
+             class="px-6 py-3 bg-gradient-to-r from-red-700 to-red-900 hover:from-red-600 hover:to-red-800 rounded-lg special-font transition-all duration-300 group">
+            <span class="relative z-10">Continue</span>
+            <div class="absolute inset-0 bg-gradient-to-r from-red-600/20 to-red-800/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+          <a href="{% url 'restart_progress' %}"
+             class="px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-900 hover:from-gray-600 hover:to-gray-800 rounded-lg special-font transition-all duration-300 group">
+            <span class="relative z-10">Restart</span>
+            <div class="absolute inset-0 bg-gradient-to-r from-gray-600/20 to-gray-800/20 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
         </div>
+      </div>
     </div>
-    {% endif %}
-
-    <!-- Choices -->
+  </div>
+  {% endif %}
+  
+  <!-- Choices with Enhanced Styling -->
+  <div class="space-y-4 mb-8">
     {% for choice in choices %}
-        <form method="post" action="{% url 'pick_choice' choice.id %}" class="space-y-2">
-            {% csrf_token %}
-            <button type="submit"
-                    class="block w-full p-4 bg-gray-800 hover:bg-gray-700 rounded transition">
-                {{ choice.text }}
-            </button>
-        </form>
-    {% empty %}
-        <p class="text-gray-400 italic">No choices available.</p>
-    {% endfor %}
-    <!-- Navigation -->
-    <div class="mt-8 border-t border-gray-700 pt-4 text-sm text-gray-400 space-x-4">
-        {% if back_slug %}
-            <a href="{% url 'room' slug=back_slug %}"
-               class="hover:text-white transition">
-                ← Back
-            </a>
-        {% endif %}
-        {% if request.COOKIES.progress %}
-            <a href="{% url 'restart_progress' %}"
-               class="hover:text-white transition">
-                Reset Progress
-            </a>
-        {% endif %}
+    <div class="group relative">
+      <!-- Choice Background -->
+      <div class="absolute inset-0 bg-gradient-to-r from-red-900/10 to-black/80 rounded-lg transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+      <div class="absolute inset-0 border border-red-800/30 rounded-lg z-0"></div>
+      
+      <!-- Choice Form -->
+      <form method="post" action="{% url 'pick_choice' choice.id %}" class="relative z-10">
+        {% csrf_token %}
+        <button type="submit"
+                class="block w-full p-5 bg-gradient-to-r from-gray-900 to-black rounded-lg transition-all duration-300 group-hover:bg-gradient-to-r group-hover:from-gray-800 group-hover:to-black/80 special-font text-left overflow-hidden">
+          
+          <!-- Choice Icon -->
+          <div class="flex items-start">
+            <div class="flex-shrink-0 mr-4 mt-1">
+              <div class="w-8 h-8 rounded-full bg-red-900/30 border-2 border-red-700/50 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-8.707l-3-3a1 1 0 00-1.414 0l-3 3a1 1 0 001.414 1.414L9 9.414V13a1 1 0 102 0V9.414l1.293 1.293a1 1 0 001.414-1.414z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            
+            <!-- Choice Text -->
+            <div class="flex-grow">
+              <span class="text-lg group-hover:text-red-300 transition-colors">{{ choice.text }}</span>
+              
+              <!-- Choice Subtext (if any) -->
+              {% if choice.set_flags %}
+              <div class="text-xs text-gray-500 mt-1">
+                <span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-1"></span>
+                This choice will affect your journey
+              </div>
+              {% endif %}
+            </div>
+            
+            <!-- Choice Arrow -->
+            <div class="flex-shrink-0 ml-2 flex items-center">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-red-500 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+              </svg>
+            </div>
+          </div>
+          
+          <!-- Choice Hover Effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300 rounded-lg"></div>
+        </button>
+      </form>
     </div>
+    {% empty %}
+    <div class="text-center py-8">
+      <div class="creepy-font text-2xl text-red-500 mb-2">No Paths Forward</div>
+      <p class="special-font text-gray-400">Your journey has reached an end...</p>
+    </div>
+    {% endfor %}
+  </div>
+  
+  <!-- Navigation with Enhanced Styling -->
+  <div class="flex flex-wrap justify-between items-center pt-6 border-t border-gray-800">
+    <div class="flex space-x-4">
+      {% if back_slug %}
+      <a href="{% url 'room' slug=back_slug %}"
+         class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-gray-800 to-gray-900 border border-gray-700 rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-300 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg>
+        <span class="special-font">Back</span>
+      </a>
+      {% endif %}
+      
+      {% if request.COOKIES.progress %}
+      <a href="{% url 'restart_progress' %}"
+         class="inline-flex items-center px-4 py-2 bg-gradient-to-r from-red-800/50 to-black/50 border border-red-700/50 rounded-lg hover:from-red-700/50 hover:to-black/50 transition-all duration-300 group">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-rotate-90 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+        </svg>
+        <span class="special-font">Reset Progress</span>
+      </a>
+      {% endif %}
+    </div>
+    
+    <div class="special-font text-sm text-gray-500">
+      <span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-1 animate-pulse"></span>
+      Your choices matter
+    </div>
+  </div>
 </div>
 
 {% if room.sfx_enter %}
   <input type="hidden" id="room-sfx-url" value="{{ room.sfx_enter.url }}">
 {% endif %}
 
-
+<!-- Room Effects Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Subtle flicker on room title
+    const roomTitle = document.querySelector('.creepy-font.text-4xl');
+    if (roomTitle) {
+      setInterval(() => {
+        if (Math.random() > 0.8) {
+          roomTitle.style.opacity = 0.8 + Math.random() * 0.2;
+        } else {
+          roomTitle.style.opacity = 1;
+        }
+      }, 300);
+    }
+    
+    // Occasional text distortion
+    const roomDescription = document.querySelector('.special-font.text-gray-200');
+    if (roomDescription) {
+      setInterval(() => {
+        if (Math.random() > 0.95) {
+          roomDescription.style.textShadow = `0 0 ${Math.random() * 5}px rgba(255, 0, 0, 0.5)`;
+          setTimeout(() => {
+            roomDescription.style.textShadow = '';
+          }, 100);
+        }
+      }, 3000);
+    }
+    
+    // Choice hover effects
+    const choices = document.querySelectorAll('.group');
+    choices.forEach(choice => {
+      choice.addEventListener('mouseenter', () => {
+        if (Math.random() > 0.7) {
+          const shadow = document.createElement('div');
+          shadow.className = 'absolute inset-0 bg-red-900/10 rounded-lg transform -translate-x-1 translate-y-1 z-0';
+          choice.appendChild(shadow);
+          
+          setTimeout(() => {
+            shadow.style.transition = 'opacity 0.5s';
+            shadow.style.opacity = '0';
+            setTimeout(() => shadow.remove(), 500);
+          }, 100);
+        }
+      });
+    });
+  });
+</script>
 
 <!-- Small JS helper to clear the cue-sfx cookie after playing -->
 <script>

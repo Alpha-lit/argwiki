@@ -1,29 +1,186 @@
 {% extends 'story/base.html' %}
-
 {% block title %}News{% endblock %}
- 
+
 {% block content %}
-<h2 class="creepy-font text-3xl text-red-500 mb-6">News & Updates</h2>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-  {% for article in news_items %}
-  <a href="{% url 'news_detail' article.pk %}" 
-     class="block bg-gray-900 p-5 rounded border border-red-700 shadow-md hover:bg-gray-800 transition-transform transform hover:scale-105 relative overflow-hidden">
-    
-    <!-- Flicker / Glitch effect on title -->
-    <h3 class="special-font text-xl mb-2 glitch-effect" data-text="{{ article.title }}">{{ article.title }}</h3>
-    
-    <!-- Summary with spooky effect -->
-    <p class="text-gray-400 line-clamp-3">{{ article.content|truncatewords:25 }}</p>
-    
-    <!-- Published date -->
-    <span class="text-red-500 text-sm italic absolute bottom-2 right-3">Published: {{ article.published_at|date:"M d, Y" }}</span>
-
-    <!-- Optional blood-drip effect -->
-    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
+<!-- Navigation buttons -->
+<div class="flex justify-between items-center mb-8">
+  <a href="{% url 'start' %}" 
+     class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    <span class="special-font text-red-400">Back to Home</span>
   </a>
+  
+  <div class="text-right">
+    <span class="special-font text-gray-500 text-sm">You are in: <span class="text-red-400">Classified Archives</span></span>
+  </div>
+</div>
+
+<!-- Page header with conspiracy board aesthetic -->
+<div class="relative mb-12">
+  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/10 to-transparent h-1 w-full top-1/2 transform -translate-y-1/2"></div>
+  <div class="relative z-10 text-center">
+    <div class="inline-block relative">
+      <h2 class="creepy-font text-5xl text-red-500 mb-2 flicker">CLASSIFIED ARCHIVES</h2>
+      <div class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-red-700 to-transparent"></div>
+    </div>
+    <div class="special-font text-gray-400 text-lg mt-2">Restricted information - Level 4 Clearance Required</div>
+  </div>
+</div>
+
+<!-- Conspiracy Board Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  {% for article in news_items %}
+  <div class="group relative">
+    <!-- Document Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+    <div class="absolute inset-0 border-2 border-amber-800/30 rounded-lg z-0"></div>
+    
+    <!-- Document Content -->
+    <a href="{% url 'news_detail' article.pk %}" 
+       class="relative z-10 block h-full p-6 rounded-lg overflow-hidden">
+       
+      <!-- Document Header -->
+      <div class="flex justify-between items-start mb-4">
+        <div class="w-8 h-8 rounded-full bg-red-700 flex items-center justify-center shadow-md">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        
+        <div class="text-right">
+          <div class="special-font text-xs text-red-800 font-bold">CLASSIFIED</div>
+          <div class="special-font text-xs text-red-700">{{ article.published_at|date:"m.d.Y" }}</div>
+        </div>
+      </div>
+      
+      <!-- Document Title with Redaction Effect -->
+      <h3 class="creepy-font text-xl text-red-900 mb-3 relative">
+        {{ article.title }}
+        <span class="absolute -bottom-1 left-0 w-full h-0.5 bg-red-900/30"></span>
+        
+        <!-- Redaction Effect -->
+        <span class="absolute top-0 right-0 w-8 h-full bg-black opacity-70"></span>
+      </h3>
+      
+      <!-- Document Content -->
+      <div class="special-font text-gray-800 text-sm mb-4 relative leading-relaxed">
+        <p class="line-clamp-4">{{ article.content|truncatewords:25 }}</p>
+        
+        <!-- Redaction Lines -->
+        <div class="absolute top-1/3 left-0 w-1/3 h-0.5 bg-black opacity-70"></div>
+        <div class="absolute top-1/2 right-0 w-1/4 h-0.5 bg-black opacity-70"></div>
+      </div>
+      
+      <!-- Document Footer -->
+      <div class="flex justify-between items-center mt-4 pt-3 border-t border-amber-800/30">
+        <div class="special-font text-xs text-amber-900">
+          File #{{ article.pk }}-{{ article.published_at|date:"Y" }}
+        </div>
+        
+        <div class="flex items-center text-red-800 group-hover:text-red-900 transition-colors">
+          <span class="special-font text-xs mr-1">VIEW</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+    </a>
+    
+    <!-- Pin Effect -->
+    <div class="absolute top-4 left-4 w-4 h-4 rounded-full bg-red-800 border-2 border-red-900 z-20"></div>
+    <div class="absolute top-4 left-4 w-2 h-2 rounded-full bg-red-600 z-20"></div>
+    
+    <!-- String Effect -->
+    <div class="absolute top-4 left-4 w-24 h-0.5 bg-red-900/20 transform rotate-12 z-0"></div>
+    <div class="absolute top-4 left-4 w-16 h-0.5 bg-red-900/20 transform -rotate-6 z-0"></div>
+    
+    <!-- Stamp Effect -->
+    <div class="absolute bottom-4 right-4 w-16 h-16 rounded-full border-2 border-red-800 flex items-center justify-center transform rotate-12 opacity-80">
+      <span class="special-font text-xs text-red-800 font-bold">TOP SECRET</span>
+    </div>
+  </div>
   {% empty %}
-  <p class="text-gray-500 italic">No news found.</p>
+  <div class="col-span-full text-center py-12">
+    <div class="creepy-font text-3xl text-red-500 mb-4">NO FILES FOUND</div>
+    <p class="special-font text-gray-400">The archives have been sanitized...</p>
+  </div>
   {% endfor %}
 </div>
+
+<!-- Back to top button -->
+<div class="mt-16 text-center">
+  <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-y-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    <span class="special-font text-red-400">Back to Top</span>
+  </button>
+</div>
+
+<!-- Conspiracy Board Effects Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Random flicker effect on document titles
+    const documentTitles = document.querySelectorAll('.creepy-font.text-xl');
+    documentTitles.forEach(title => {
+      setInterval(() => {
+        if (Math.random() > 0.9) {
+          title.style.opacity = 0.8 + Math.random() * 0.2;
+        } else {
+          title.style.opacity = 1;
+        }
+      }, 300);
+    });
+    
+    // Occasional redaction effect
+    setInterval(() => {
+      if (Math.random() > 0.95) {
+        const documents = document.querySelectorAll('.group');
+        const randomDoc = documents[Math.floor(Math.random() * documents.length)];
+        
+        const redaction = document.createElement('div');
+        redaction.className = 'absolute inset-0 bg-black opacity-70 pointer-events-none z-10';
+        randomDoc.appendChild(redaction);
+        
+        setTimeout(() => {
+          redaction.style.transition = 'opacity 0.5s';
+          redaction.style.opacity = '0';
+          setTimeout(() => redaction.remove(), 500);
+        }, 1000);
+      }
+    }, 5000);
+    
+    // Pin animation on hover
+    const documents = document.querySelectorAll('.group');
+    documents.forEach(doc => {
+      doc.addEventListener('mouseenter', () => {
+        const pin = doc.querySelector('.absolute.top-4.left-4.w-4.h-4.rounded-full');
+        if (pin) {
+          pin.style.transform = 'scale(1.2)';
+          pin.style.transition = 'transform 0.3s';
+        }
+      });
+      
+      doc.addEventListener('mouseleave', () => {
+        const pin = doc.querySelector('.absolute.top-4.left-4.w-4.h-4.rounded-full');
+        if (pin) {
+          pin.style.transform = 'scale(1)';
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Line clamp for content */
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
 {% endblock %}

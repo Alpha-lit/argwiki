@@ -1,28 +1,219 @@
 {% extends 'story/base.html' %}
-
 {% block title %}{{ cast_member.name }}{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-  <h2 class="creepy-font text-4xl text-red-500 flicker">{{ cast_member.name }}</h2>
-
-  {% if cast_member.image %}
-  <img src="{{ cast_member.image.url }}" alt="{{ cast_member.name }}" class="rounded border border-red-700 shadow-lg">
-  {% endif %}
-
-  <div class="special-font text-gray-300">{{ cast_member.role|linebreaks }}</div>
-
-  {% if other_cast %}
-  <h3 class="creepy-font text-2xl text-red-400 mt-6">Other Cast</h3>
-  <ul class="list-disc ml-6 text-gray-400">
-    {% for related in other_cast %}
-    <li>
-      <a href="{% url 'cast_detail' related.pk %}" class="hover:text-red-500 transition">
-        {{ related.name }}
-      </a>
-    </li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+<!-- Navigation buttons -->
+<div class="flex justify-between items-center mb-8">
+  <div class="flex space-x-4">
+    <a href="{% url 'start' %}" 
+       class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      <span class="special-font text-red-400">Back to Home</span>
+    </a>
+    
+    <a href="{% url 'cast_list' %}" 
+       class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/30 to-black/30 border border-red-800/30 rounded-lg hover:from-red-800/30 hover:to-black/30 transition-all duration-300 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+      <span class="special-font text-red-400">Cast List</span>
+    </a>
+  </div>
+  
+  <div class="text-right">
+    <span class="special-font text-gray-500 text-sm">Viewing: <span class="text-red-400">{{ cast_member.name }}</span></span>
+  </div>
 </div>
+
+<div class="relative">
+  <!-- Background effect -->
+  <div class="absolute inset-0 bg-gradient-to-br from-red-900/10 to-black/80 rounded-xl z-0"></div>
+  
+  <!-- Main content container -->
+  <div class="relative z-10">
+    <!-- Character header with blood effect -->
+    <div class="relative mb-8">
+      <div class="absolute -top-4 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-700 to-transparent"></div>
+      <h2 class="creepy-font text-5xl text-red-500 flicker mb-2 relative">
+        {{ cast_member.name }}
+        <span class="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-red-900 to-transparent"></span>
+      </h2>
+      <div class="blood-drip-container absolute -bottom-6 left-1/4 w-1 h-8 bg-red-700 rounded-full"></div>
+      <div class="blood-drip-container absolute -bottom-10 left-1/3 w-1 h-6 bg-red-800 rounded-full"></div>
+      <div class="blood-drip-container absolute -bottom-8 left-2/3 w-1 h-10 bg-red-600 rounded-full"></div>
+    </div>
+    
+    <!-- Character card with image and details -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      <!-- Character image with horror frame -->
+      <div class="md:col-span-1 relative group">
+        <div class="absolute inset-0 bg-red-900/20 rounded-lg transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+        <div class="absolute inset-0 border-2 border-red-800/50 rounded-lg transform -rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+        
+        {% if cast_member.image %}
+        <div class="relative overflow-hidden rounded-lg border-2 border-red-900/50 shadow-2xl shadow-red-900/30 z-10">
+          <img src="{{ cast_member.image.url }}" alt="{{ cast_member.name }}" 
+               class="w-full h-auto transform group-hover:scale-105 transition-transform duration-700">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+        </div>
+        {% else %}
+        <div class="relative bg-gradient-to-br from-red-900/20 to-black/80 rounded-lg border-2 border-red-900/50 shadow-2xl shadow-red-900/30 z-10 flex items-center justify-center h-64">
+          <div class="text-center">
+            <div class="text-6xl mb-2 text-red-700/50">?</div>
+            <p class="special-font text-red-500/70">No Image</p>
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Glitch effect overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300 rounded-lg"></div>
+      </div>
+      
+      <!-- Character details -->
+      <div class="md:col-span-2 space-y-6">
+        <!-- Role section -->
+        <div class="bg-black/40 backdrop-blur-sm border-l-4 border-red-700 p-6 rounded-r-lg relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-red-900/10 rounded-full -mr-16 -mt-16"></div>
+          <h3 class="creepy-font text-2xl text-red-400 mb-3 relative z-10">
+            <span class="inline-block mr-2">▶</span> Role
+          </h3>
+          <div class="special-font text-xl text-gray-200 relative z-10">
+            {{ cast_member.role|linebreaks }}
+          </div>
+        </div>
+        
+        <!-- Bio section -->
+        {% if cast_member.bio %}
+        <div class="bg-black/40 backdrop-blur-sm border-l-4 border-red-800 p-6 rounded-r-lg relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-24 h-24 bg-red-900/10 rounded-full -mr-12 -mt-12"></div>
+          <h3 class="creepy-font text-2xl text-red-400 mb-3 relative z-10">
+            <span class="inline-block mr-2">◉</span> Biography
+          </h3>
+          <div class="special-font text-gray-300 relative z-10 leading-relaxed">
+            {{ cast_member.bio|linebreaks }}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- Other cast section -->
+    {% if other_cast %}
+    <div class="mt-16 relative">
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/10 to-transparent h-1 w-full"></div>
+      <h3 class="creepy-font text-3xl text-red-400 mb-8 text-center relative">
+        <span class="inline-block bg-black px-4">Other Cast</span>
+      </h3>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for related in other_cast %}
+        <div class="group relative">
+          <!-- Card background with glow effect -->
+          <div class="absolute inset-0 bg-gradient-to-br from-red-900/10 to-black/80 rounded-xl transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+          <div class="absolute inset-0 border border-red-800/30 rounded-xl z-0"></div>
+          
+          <!-- Card content -->
+          <div class="relative z-10 p-6 h-full flex flex-col">
+            <div class="flex items-start space-x-4 mb-4">
+              {% if related.image %}
+              <div class="flex-shrink-0 w-16 h-16 rounded-full overflow-hidden border-2 border-red-800/50">
+                <img src="{{ related.image.url }}" alt="{{ related.name }}" class="w-full h-full object-cover">
+              </div>
+              {% else %}
+              <div class="flex-shrink-0 w-16 h-16 rounded-full bg-gradient-to-br from-red-900/30 to-black flex items-center justify-center border-2 border-red-800/50">
+                <span class="text-red-700/70 text-xl">?</span>
+              </div>
+              {% endif %}
+              
+              <div>
+                <h4 class="creepy-font text-xl text-red-400 group-hover:text-red-300 transition-colors">
+                  {{ related.name }}
+                </h4>
+                <p class="special-font text-gray-400 text-sm">{{ related.role }}</p>
+              </div>
+            </div>
+            
+            <div class="mt-auto pt-4 border-t border-red-900/20">
+              <a href="{% url 'cast_detail' related.pk %}" 
+                 class="inline-flex items-center text-red-500 hover:text-red-300 transition-colors special-font group/link">
+                <span>View Profile</span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1 transform group-hover/link:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+                </svg>
+              </a>
+            </div>
+          </div>
+          
+          <!-- Card hover effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300 rounded-xl"></div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Enhanced horror effects script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Blood drip animation
+    const bloodDrips = document.querySelectorAll('.blood-drip-container');
+    bloodDrips.forEach(drip => {
+      setInterval(() => {
+        const dripClone = drip.cloneNode(true);
+        dripClone.classList.add('animate-drip');
+        drip.parentNode.appendChild(dripClone);
+        
+        setTimeout(() => {
+          dripClone.remove();
+        }, 2000);
+      }, 3000 + Math.random() * 5000);
+    });
+    
+    // Subtle flicker on character name
+    const characterName = document.querySelector('.creepy-font.text-5xl');
+    if (characterName) {
+      setInterval(() => {
+        if (Math.random() > 0.7) {
+          characterName.style.opacity = 0.7 + Math.random() * 0.3;
+        } else {
+          characterName.style.opacity = 1;
+        }
+      }, 200);
+    }
+    
+    // Occasional shadow behind cast cards
+    const castCards = document.querySelectorAll('.group');
+    castCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        if (Math.random() > 0.5) {
+          const shadow = document.createElement('div');
+          shadow.className = 'absolute inset-0 bg-red-900/10 rounded-xl transform -translate-x-1 translate-y-1 z-0';
+          card.appendChild(shadow);
+          
+          setTimeout(() => {
+            shadow.style.transition = 'opacity 0.5s';
+            shadow.style.opacity = '0';
+            setTimeout(() => shadow.remove(), 500);
+          }, 100);
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  @keyframes drip {
+    0% { transform: translateY(0); opacity: 0.8; }
+    70% { opacity: 0.8; }
+    100% { transform: translateY(20px); opacity: 0; }
+  }
+  
+  .animate-drip {
+    animation: drip 2s ease-in forwards;
+  }
+</style>
 {% endblock %}

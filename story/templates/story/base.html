@@ -8,179 +8,592 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Special+Elite&family=Creepster&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Special+Elite&family=Creepster&family=Nosifer&family=Butcherman&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="{% static 'story/css/styles.css' %}">
   
+  <!-- Enhanced Horror Effects CSS -->
+  <style>
+    /* Cursed background animation */
+    @keyframes cursed-pulse {
+      0% { background-color: rgba(0, 0, 0, 1); }
+      25% { background-color: rgba(20, 0, 0, 1); }
+      50% { background-color: rgba(0, 0, 0, 1); }
+      75% { background-color: rgba(10, 0, 5, 1); }
+      100% { background-color: rgba(0, 0, 0, 1); }
+    }
+    
+    body {
+      animation: cursed-pulse 20s infinite ease-in-out;
+      background-image: 
+        url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+'),
+        radial-gradient(circle at 10% 20%, rgba(120, 0, 0, 0.15) 0%, transparent 25%),
+        radial-gradient(circle at 90% 60%, rgba(80, 0, 0, 0.15) 0%, transparent 25%),
+        linear-gradient(0deg, rgba(10, 0, 0, 0.8) 0%, rgba(20, 0, 0, 0.4) 100%);
+      background-attachment: fixed;
+      background-blend-mode: overlay;
+    }
+    
+    /* Enhanced static overlay effect */
+    .static-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+');
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9999;
+      mix-blend-mode: overlay;
+    }
+    
+    /* Shadow figure effect */
+    .shadow-figure {
+      position: fixed;
+      width: 80px;
+      height: 200px;
+      background: radial-gradient(ellipse at center, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0) 70%);
+      border-radius: 50% 50% 0 0;
+      transform-origin: bottom center;
+      opacity: 0;
+      pointer-events: none;
+      z-index: 1;
+    }
+    
+    /* Flickering overlay */
+    .flicker-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 0, 0, 0.03);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9998;
+    }
+    
+    /* Eye following cursor */
+    .eye {
+      position: fixed;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #ff0000, #000000);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 9997;
+      transition: opacity 0.5s ease;
+    }
+    
+    .eye::after {
+      content: '';
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #000;
+    }
+    
+    /* Cursed text effect */
+    .cursed-text {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .cursed-text::before,
+    .cursed-text::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    
+    .cursed-text::before {
+      color: #ff0000;
+      z-index: -1;
+      transform: translateX(2px);
+      text-shadow: 0 0 5px #ff0000;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .cursed-text::after {
+      color: #9900ff;
+      z-index: -2;
+      transform: translateX(-2px);
+      text-shadow: 0 0 5px #9900ff;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    
+    .cursed-text:hover::before,
+    .cursed-text:hover::after {
+      opacity: 0.8;
+    }
+    
+    /* Blood drip animation */
+    @keyframes blood-drip {
+      0% { transform: translateY(0); opacity: 0.8; }
+      70% { opacity: 0.8; }
+      100% { transform: translateY(20px); opacity: 0; }
+    }
+    
+    .blood-drip {
+      position: absolute;
+      bottom: -10px;
+      width: 2px;
+      height: 10px;
+      background: linear-gradient(to bottom, #ff0000, #990000);
+      border-radius: 0 0 50% 50%;
+      animation: blood-drip 2s infinite;
+    }
+    
+    /* Glitch effect */
+    @keyframes glitch {
+      0% { transform: translate(0); }
+      20% { transform: translate(-2px, 2px); }
+      40% { transform: translate(-2px, -2px); }
+      60% { transform: translate(2px, 2px); }
+      80% { transform: translate(2px, -2px); }
+      100% { transform: translate(0); }
+    }
+    
+    .glitch-effect {
+      position: relative;
+      display: inline-block;
+    }
+    
+    .glitch-effect::before,
+    .glitch-effect::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+    }
+    
+    .glitch-effect::before {
+      color: #0ff;
+      z-index: -1;
+      transform: translateX(2px);
+      text-shadow: 0 0 5px #0ff;
+    }
+    
+    .glitch-effect::after {
+      color: #f0f;
+      z-index: -2;
+      transform: translateX(-2px);
+      text-shadow: 0 0 5px #f0f;
+    }
+    
+    .nav-item:hover .glitch-effect::before {
+      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+      opacity: 0.8;
+    }
+    
+    .nav-item:hover .glitch-effect::after {
+      animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) reverse both infinite;
+      opacity: 0.8;
+    }
+    
+    /* Room transition effect */
+    .room-transition {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.5s;
+    }
+    
+    .room-transition.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+  </style>
 </head>
 <body class="h-full text-zinc-100 selection:bg-red-600/60">
-  <!-- Full width header with navigation -->
-  <div class="full-width-container bg-black border-b border-red-900">
-    <div class="max-w-6xl mx-auto p-4">
+  <!-- Horror Effects Elements -->
+  <div class="static-overlay" id="staticOverlay"></div>
+  <div class="flicker-overlay" id="flickerOverlay"></div>
+  <div class="shadow-figure" id="shadowFigure"></div>
+  <div class="eye" id="leftEye"></div>
+  <div class="eye" id="rightEye"></div>
+  <div class="room-transition" id="roomTransition"></div>
+  
+  <!-- Cursed Header with Navigation -->
+  <div class="full-width-container bg-black border-b border-red-900 relative">
+    <!-- VHS Effect at top of header -->
+    <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-700 to-transparent"></div>
+    
+    <div class="max-w-6xl mx-auto p-4 relative z-10">
       <div class="flex items-center justify-between mb-4">
-        <h1 class="creepy-font text-3xl text-red-600 flicker">THE DISNEY WIKI</h1>
-        <div class="flex items-center">
-          <span class="text-zinc-500 mr-2 special-font">SFX</span>
-          <label class="relative inline-flex items-center cursor-pointer">
-            <input type="checkbox" id="sfx-toggle" class="sr-only peer">
-            {% if room.sfx_enter %}
-            <input type="hidden" id="room-sfx-url" value="{{ room.sfx_enter.url }}">
-            {% endif %}
-            <div class="w-12 h-6 bg-zinc-800 rounded-full peer peer-checked:bg-red-600 relative">
-              <div class="absolute top-1 left-1 w-4 h-4 bg-red-600 rounded-full transition-transform peer-checked:translate-x-6"></div>
-            </div>
-          </label>
+        <!-- Cursed Title with Multiple Effects -->
+        <div class="relative">
+          <h1 class="creepy-font text-4xl text-red-600 flicker cursed-text" data-text="THE DISNEY WIKI">THE DISNEY WIKI</h1>
+          <div class="absolute -bottom-2 left-0 w-full h-0.5 bg-gradient-to-r from-red-700 to-transparent"></div>
+          <div class="blood-drip absolute -bottom-4 left-1/4"></div>
+          <div class="blood-drip absolute -bottom-6 left-1/2" style="animation-delay: 0.5s"></div>
+          <div class="blood-drip absolute -bottom-5 left-3/4" style="animation-delay: 1s"></div>
+        </div>
+        
+        <!-- SFX Toggle with Enhanced Styling -->
+        <div class="flex items-center space-x-3">
+          <div class="flex items-center">
+            <span class="text-zinc-500 mr-2 special-font">SFX</span>
+            <label class="relative inline-flex items-center cursor-pointer">
+              <input type="checkbox" id="sfx-toggle" class="sr-only peer">
+              {% if room.sfx_enter %}
+              <input type="hidden" id="room-sfx-url" value="{{ room.sfx_enter.url }}">
+              {% endif %}
+              <div class="w-14 h-7 bg-zinc-800 rounded-full peer peer-checked:bg-red-600 relative border border-red-900/50">
+                <div class="absolute top-1 left-1 w-5 h-5 bg-red-600 rounded-full transition-transform peer-checked:translate-x-7 flex items-center justify-center">
+                  <div class="w-2 h-2 bg-black rounded-full"></div>
+                </div>
+              </div>
+            </label>
+          </div>
+          
+          <!-- Cursed Indicator -->
+          <div class="flex items-center space-x-1">
+            <div class="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+            <span class="special-font text-xs text-red-500">ACTIVE</span>
+          </div>
         </div>
       </div>
       
-<!-- Desktop Navigation -->
-<nav class="hidden md:flex justify-center items-center special-font text-lg">
-  <div class="nav-item">
-    <a href="{% url 'tape_list' %}">
-      <span class="glitch-effect" data-text="Tapes">Tapes</span>
-    </a>
-    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
-    <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">do not rewind...</div>
-  </div>
-  <span class="separator">|</span>
-
-  <div class="nav-item">
-    <a href="{% url 'character_list' %}">
-      <span class="glitch-effect" data-text="Characters">Characters</span>
-    </a>
-    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
-    <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">some are not human</div>
-  </div>
-  <span class="separator">|</span>
-
-  <div class="nav-item">
-    <a href="{% url 'cast_list' %}">
-      <span class="glitch-effect" data-text="Cast">Cast</span>
-    </a>
-    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
-    <!-- <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">they're always watching</div> -->
-  </div>
-  <span class="separator">|</span>
-
-  <div class="nav-item">
-    <a href="{% url 'news_list' %}">
-      <span class="glitch-effect" data-text="News">News</span>
-    </a>
-    <div class="blood-drip"></div><div class="blood-drip"></div><div class="blood-drip"></div>
-    <div class="whisper special-font text-xs absolute -bottom-5 left-0 right-0 text-center text-red-400">the truth is out there</div>
-  </div>
-</nav>
-
-<!-- Mobile Navigation Toggle -->
-<div class="md:hidden flex justify-center mt-4">
-  <button id="mobile-menu-toggle" class="px-4 py-2 bg-zinc-900 border border-zinc-700 special-font flex items-center">
-    <span>Menu</span>
-    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-red-500" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-    </svg>
-  </button>
-</div>
-
-<!-- Mobile Navigation Menu -->
-<div id="mobile-menu" class="mobile-menu md:hidden special-font mt-2 bg-zinc-900 border border-zinc-700 rounded max-h-0 overflow-hidden transition-all duration-500">
-  <div class="py-2">
-    <a href="{% url 'tape_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Tapes</a>
-    <a href="{% url 'character_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Characters</a>
-    <a href="{% url 'cast_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">Cast</a>
-    <a href="{% url 'news_list' %}" class="block py-2 px-4 hover:bg-zinc-800 hover:text-red-400 transition">News</a>
-  </div>
-</div>
-
-  <main class="min-h-screen max-w-6xl mx-auto p-4">
-    <div id="content" class="animate-fade content-box p-6 rounded-lg mt-6">
-      {% block content %}
-        <!-- Your room.html content will be inserted here -->
-        <div>
-          <h2 class="creepy-font text-2xl text-red-500 mb-4">{{ room.title }}</h2>
-          <div class="mb-6 special-font">{{ room.description|safe|linebreaks }}</div>
-
-          {% if room.image %}
-            <img src="{{ room.image.url }}" class="mb-4 rounded" alt="{{ room.title }}">
-          {% endif %}
-
-          <!-- {% if room.sfx_enter %}
-          <audio id="room-sfx" src="{{ room.sfx_enter.url }}" autoplay></audio>
-          {% endif %} -->
-
-          <!-- Continue / Restart overlay (only on first room for returning users) -->
-          {% if show_continue_overlay %}
-          <div id="overlay" class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
-            <div class="bg-gray-900 p-8 rounded shadow-xl text-center">
-              <p class="text-lg mb-4">You were last in <strong>{{ last_room.title }}</strong>.</p>
-              <div class="space-x-4">
-                <a href="{% url 'room' slug=last_room.slug %}"
-                   class="px-4 py-2 bg-green-600 hover:bg-green-700 rounded">
-                   Continue
-                </a>
-                <a href="{% url 'restart_progress' %}"
-                   class="px-4 py-2 bg-red-600 hover:bg-red-700 rounded">
-                   Restart
-                </a>
-              </div>
-            </div>
-          </div>
-          {% endif %}
-
-          <!-- Choices -->
-          {% for choice in choices %}
-            <form method="post" action="{% url 'pick_choice' choice.id %}" class="space-y-2">
-              {% csrf_token %}
-              <button type="submit"
-                      class="block w-full p-4 bg-gray-800 hover:bg-gray-700 rounded transition special-font">
-                {{ choice.text }}
-              </button>
-            </form>
-          {% empty %}
-            <p class="text-gray-400 italic">No choices available.</p>
-          {% endfor %}
+      <!-- Enhanced Desktop Navigation -->
+      <nav class="hidden md:flex justify-center items-center special-font text-lg relative">
+        <div class="absolute -top-2 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-red-700/50 to-transparent"></div>
+        
+        <div class="nav-item mx-2 relative px-4 py-2 group">
+          <a href="{% url 'tape_list' %}" class="relative z-10">
+            <span class="glitch-effect" data-text="Tapes">Tapes</span>
+          </a>
+          <div class="blood-drip absolute -bottom-3 left-1/4"></div>
+          <div class="blood-drip absolute -bottom-3 left-2/4" style="animation-delay: 0.3s"></div>
+          <div class="blood-drip absolute -bottom-3 left-3/4" style="animation-delay: 0.6s"></div>
+          <div class="whisper special-font text-xs absolute -bottom-8 left-0 right-0 text-center text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">do not rewind...</div>
           
-          <!-- Navigation -->
-          <div class="mt-8 border-t border-gray-700 pt-4 text-sm text-gray-400 space-x-4">
-            {% if back_slug %}
-              <a href="{% url 'room' slug=back_slug %}"
-                 class="hover:text-white transition special-font">
-                ← Back
-              </a>
-            {% endif %}
-            {% if request.COOKIES.progress %}
-              <a href="{% url 'restart_progress' %}"
-                 class="hover:text-white transition special-font">
-                Reset Progress
-              </a>
-            {% endif %}
-          </div>
+          <!-- Hover effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/20 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
         </div>
-
-        <!-- {% include 'story/components/audio-toggle.html' %} -->
-
-        <!-- Small JS helper to clear the cue-sfx cookie after playing -->
-        <script>
-        (function () {
-          const sfx = document.cookie
-            .split("; ")
-            .find(row => row.startsWith("_cue_sfx="));
-          if (sfx) {
-            const url = sfx.split("=")[1];
-            const audio = new Audio("{% static 'story/sfx/' %}" + url);
-            audio.play();
-            document.cookie = "_cue_sfx=; Max-Age=0; path=/";
-          }
-        })();
-        </script>
-      {% endblock %}
+        
+        <span class="separator mx-2 text-red-700">|</span>
+        
+        <div class="nav-item mx-2 relative px-4 py-2 group">
+          <a href="{% url 'character_list' %}" class="relative z-10">
+            <span class="glitch-effect" data-text="Characters">Characters</span>
+          </a>
+          <div class="blood-drip absolute -bottom-3 left-1/4"></div>
+          <div class="blood-drip absolute -bottom-3 left-2/4" style="animation-delay: 0.3s"></div>
+          <div class="blood-drip absolute -bottom-3 left-3/4" style="animation-delay: 0.6s"></div>
+          <div class="whisper special-font text-xs absolute -bottom-8 left-0 right-0 text-center text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">some are not human</div>
+          
+          <!-- Hover effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/20 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+        
+        <span class="separator mx-2 text-red-700">|</span>
+        
+        <div class="nav-item mx-2 relative px-4 py-2 group">
+          <a href="{% url 'cast_list' %}" class="relative z-10">
+            <span class="glitch-effect" data-text="Cast">Cast</span>
+          </a>
+          <div class="blood-drip absolute -bottom-3 left-1/4"></div>
+          <div class="blood-drip absolute -bottom-3 left-2/4" style="animation-delay: 0.3s"></div>
+          <div class="blood-drip absolute -bottom-3 left-3/4" style="animation-delay: 0.6s"></div>
+          
+          <!-- Hover effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/20 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+        
+        <span class="separator mx-2 text-red-700">|</span>
+        
+        <div class="nav-item mx-2 relative px-4 py-2 group">
+          <a href="{% url 'news_list' %}" class="relative z-10">
+            <span class="glitch-effect" data-text="News">News</span>
+          </a>
+          <div class="blood-drip absolute -bottom-3 left-1/4"></div>
+          <div class="blood-drip absolute -bottom-3 left-2/4" style="animation-delay: 0.3s"></div>
+          <div class="blood-drip absolute -bottom-3 left-3/4" style="animation-delay: 0.6s"></div>
+          <div class="whisper special-font text-xs absolute -bottom-8 left-0 right-0 text-center text-red-400 opacity-0 group-hover:opacity-100 transition-opacity">the truth is out there</div>
+          
+          <!-- Hover effect -->
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/20 to-transparent rounded-lg opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        </div>
+      </nav>
+      
+      <!-- Enhanced Mobile Navigation Toggle -->
+      <div class="md:hidden flex justify-center mt-4">
+        <button id="mobile-menu-toggle" class="px-4 py-2 bg-zinc-900 border border-zinc-700 special-font flex items-center group">
+          <span class="cursed-text" data-text="Menu">Menu</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 text-red-500 group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+      
+      <!-- Enhanced Mobile Navigation Menu -->
+      <div id="mobile-menu" class="mobile-menu md:hidden special-font mt-2 bg-zinc-900 border border-zinc-700 rounded max-h-0 overflow-hidden transition-all duration-500">
+        <div class="py-2 relative">
+          <div class="absolute top-0 left-0 w-full h-0.5 bg-gradient-to-r from-transparent via-red-700/50 to-transparent"></div>
+          <a href="{% url 'tape_list' %}" class="block py-3 px-4 hover:bg-zinc-800 hover:text-red-400 transition relative group">
+            <span class="cursed-text" data-text="Tapes">Tapes</span>
+            <div class="absolute left-0 top-0 w-1 h-full bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+          <a href="{% url 'character_list' %}" class="block py-3 px-4 hover:bg-zinc-800 hover:text-red-400 transition relative group">
+            <span class="cursed-text" data-text="Characters">Characters</span>
+            <div class="absolute left-0 top-0 w-1 h-full bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+          <a href="{% url 'cast_list' %}" class="block py-3 px-4 hover:bg-zinc-800 hover:text-red-400 transition relative group">
+            <span class="cursed-text" data-text="Cast">Cast</span>
+            <div class="absolute left-0 top-0 w-1 h-full bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+          <a href="{% url 'news_list' %}" class="block py-3 px-4 hover:bg-zinc-800 hover:text-red-400 transition relative group">
+            <span class="cursed-text" data-text="News">News</span>
+            <div class="absolute left-0 top-0 w-1 h-full bg-red-700 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Main Content Area -->
+  <main class="min-h-screen max-w-6xl mx-auto p-4 relative">
+    <!-- Content Box with Enhanced Styling -->
+    <div id="content" class="animate-fade content-box p-8 rounded-xl mt-8 relative overflow-hidden">
+      <!-- Content Box Effects -->
+      <div class="absolute inset-0 bg-gradient-to-br from-red-900/10 to-black/80 rounded-xl z-0"></div>
+      <div class="absolute inset-0 border border-red-900/30 rounded-xl z-0"></div>
+      <div class="absolute top-0 left-0 w-16 h-16 border-t-2 border-l-2 border-red-700/50"></div>
+      <div class="absolute bottom-0 right-0 w-16 h-16 border-b-2 border-r-2 border-red-700/50"></div>
+      
+      <!-- Content -->
+      <div class="relative z-10">
+        {% block content %}
+          <!-- Room content will be inserted here -->
+        {% endblock %}
+      </div>
     </div>
   </main>
-
+  
+  <!-- Audio Element -->
   <audio id="sfx" preload="auto"></audio>
-
+  
+  <!-- Scripts -->
   <script src="{% static 'story/js/glitch.js' %}"></script>
   <script src="{% static 'story/js/sfx.js' %}"></script>
   <script src="{% static 'story/js/prog.js' %}"></script>
+  
+  <!-- Enhanced Horror Effects JavaScript -->
   <script>
+    // SFX Toggle Persistence
+    document.addEventListener('DOMContentLoaded', function() {
+      const sfxToggle = document.getElementById('sfx-toggle');
+      
+      // Load saved state from localStorage
+      const sfxEnabled = localStorage.getItem('sfxEnabled') === 'true';
+      sfxToggle.checked = sfxEnabled;
+      
+      // Save state when toggle changes
+      sfxToggle.addEventListener('change', function() {
+        localStorage.setItem('sfxEnabled', this.checked);
+      });
+      
+      // Play room entry sound if SFX is enabled
+      const roomSfxUrl = document.getElementById('room-sfx-url')?.value;
+      if (roomSfxUrl && sfxEnabled) {
+        const audio = new Audio(roomSfxUrl);
+        audio.volume = 0.3;
+        audio.play().catch(e => console.log("Error playing room SFX:", e));
+      }
+    });
+    
+    // Check if SFX is enabled
+    function isSfxEnabled() {
+      return localStorage.getItem('sfxEnabled') === 'true';
+    }
+    
+    // Static effect
+    const staticOverlay = document.getElementById('staticOverlay');
+    
+    function showStatic() {
+      staticOverlay.style.opacity = Math.random() * 0.1;
+      setTimeout(() => {
+        staticOverlay.style.opacity = 0;
+      }, 50 + Math.random() * 100);
+    }
+    
+    // Random static bursts
+    setInterval(() => {
+      if (Math.random() > 0.95) {
+        showStatic();
+      }
+    }, 2000);
+    
+    // Flickering overlay
+    const flickerOverlay = document.getElementById('flickerOverlay');
+    
+    function flickerScreen() {
+      flickerOverlay.style.opacity = Math.random() * 0.05;
+      setTimeout(() => {
+        flickerOverlay.style.opacity = 0;
+      }, 50 + Math.random() * 100);
+    }
+    
+    // Random flickering
+    setInterval(() => {
+      if (Math.random() > 0.98) {
+        flickerScreen();
+      }
+    }, 3000);
+    
+    // Shadow figure effect
+    const shadowFigure = document.getElementById('shadowFigure');
+    
+    function showShadowFigure() {
+      const side = Math.random() > 0.5 ? 'left' : 'right';
+      const top = Math.random() * window.innerHeight;
+      
+      shadowFigure.style.top = `${top}px`;
+      shadowFigure.style[side] = '-100px';
+      shadowFigure.style.opacity = '0.7';
+      
+      // Animate the figure moving across the screen
+      setTimeout(() => {
+        shadowFigure.style.transition = 'transform 3s, opacity 3s';
+        shadowFigure.style.transform = `translateX(${side === 'left' ? window.innerWidth + 200 : -window.innerWidth - 200}px)`;
+        shadowFigure.style.opacity = '0';
+      }, 100);
+      
+      // Reset after animation
+      setTimeout(() => {
+        shadowFigure.style.transition = '';
+        shadowFigure.style.transform = '';
+        shadowFigure.style.opacity = '0';
+      }, 3100);
+    }
+    
+    // Random shadow figure appearances
+    setInterval(() => {
+      if (Math.random() > 0.99) {
+        showShadowFigure();
+      }
+    }, 10000);
+    
+    // Eye following cursor
+    const leftEye = document.getElementById('leftEye');
+    const rightEye = document.getElementById('rightEye');
+    
+    document.addEventListener('mousemove', (e) => {
+      // Only show eyes occasionally
+      if (Math.random() > 0.98) {
+        const eyeSpacing = 30;
+        const eyeY = e.clientY - 10;
+        const leftEyeX = e.clientX - eyeSpacing - 10;
+        const rightEyeX = e.clientX + eyeSpacing - 10;
+        
+        leftEye.style.left = `${leftEyeX}px`;
+        leftEye.style.top = `${eyeY}px`;
+        leftEye.style.opacity = '0.7';
+        
+        rightEye.style.left = `${rightEyeX}px`;
+        rightEye.style.top = `${eyeY}px`;
+        rightEye.style.opacity = '0.7';
+        
+        // Hide eyes after a short time
+        setTimeout(() => {
+          leftEye.style.opacity = '0';
+          rightEye.style.opacity = '0';
+        }, 500);
+      }
+    });
+    
+    // Occasional whispers
+    const whisperTexts = [
+      "they're watching",
+      "don't look back",
+      "you're not alone",
+      "get out",
+      "i see you",
+      "help me",
+      "turn around",
+      "run"
+    ];
+    
+    function showWhisper() {
+      if (!isSfxEnabled()) return;
+      
+      const whisper = document.createElement('div');
+      whisper.className = 'fixed text-red-500 opacity-0 pointer-events-none z-50 special-font';
+      whisper.textContent = whisperTexts[Math.floor(Math.random() * whisperTexts.length)];
+      whisper.style.fontSize = `${10 + Math.random() * 10}px`;
+      whisper.style.left = `${Math.random() * window.innerWidth}px`;
+      whisper.style.top = `${Math.random() * window.innerHeight}px`;
+      
+      document.body.appendChild(whisper);
+      
+      // Fade in
+      setTimeout(() => {
+        whisper.style.transition = 'opacity 1s';
+        whisper.style.opacity = '0.7';
+      }, 10);
+      
+      // Fade out and remove
+      setTimeout(() => {
+        whisper.style.opacity = '0';
+        setTimeout(() => {
+          document.body.removeChild(whisper);
+        }, 1000);
+      }, 2000);
+    }
+    
+    // Random whispers
+    setInterval(() => {
+      if (Math.random() > 0.97) {
+        showWhisper();
+      }
+    }, 5000);
+    
+    // Subtle background parallax
+    document.addEventListener('mousemove', (e) => {
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      
+      document.body.style.backgroundPosition = `${x * 20}px ${y * 20}px`;
+    });
+    
+    // Random screen shake
+    function shakeScreen() {
+      const intensity = 1 + Math.random() * 2;
+      const duration = 50 + Math.random() * 100;
+      
+      document.body.style.transform = `translate(${Math.random() * intensity - intensity/2}px, ${Math.random() * intensity - intensity/2}px)`;
+      
+      setTimeout(() => {
+        document.body.style.transform = '';
+      }, duration);
+    }
+    
+    // Random screen shake
+    setInterval(() => {
+      if (Math.random() > 0.99) {
+        shakeScreen();
+      }
+    }, 5000);
+    
     // Tab title trick: cycles occasionally, or uses room override if provided
     (function(){
       const override = document.querySelector('meta[name="tab-title-override"]')?.content
@@ -211,6 +624,24 @@
         title.style.opacity = 1;
       }
     }, 300);
+    
+    // Room transition effect
+    function roomTransition() {
+      const transition = document.getElementById('roomTransition');
+      transition.classList.add('active');
+      
+      setTimeout(() => {
+        transition.classList.remove('active');
+      }, 500);
+    }
+    
+    // Apply room transition when clicking on choices
+    document.querySelectorAll('button[type="submit"]').forEach(button => {
+      button.addEventListener('click', function() {
+        roomTransition();
+      });
+    });
+;
   </script>
 </body>
 </html>

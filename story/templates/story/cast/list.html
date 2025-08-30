@@ -1,27 +1,181 @@
 {% extends 'story/base.html' %}
-
 {% block title %}Cast Members{% endblock %}
 
 {% block content %}
-<h2 class="creepy-font text-3xl text-red-500 mb-6">Meet the Cast</h2>
-
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-  {% for cast_member in cast_members %}
-  <a href="{% url 'cast_detail' cast_member.pk %}"
-     class="block bg-gray-900 p-5 rounded hover:bg-gray-800 border border-red-700 shadow-md transition-transform transform hover:scale-105">
-     
-    {% if cast_member.image %}
-    <img src="{{ cast_member.image.url }}" alt="{{ cast_member.name }}" 
-         class="rounded mb-3 border border-red-700 shadow-lg">
-    {% endif %}
-
-    <h3 class="special-font text-xl mb-1 glitch-effect" data-text="{{ cast_member.name }}">
-      {{ cast_member.name }}
-    </h3>
-    <p class="text-gray-400 italic">{{ cast_member.role }}</p>
+<!-- Navigation buttons -->
+<div class="flex justify-between items-center mb-8">
+  <a href="{% url 'start' %}" 
+     class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    <span class="special-font text-red-400">Back to Home</span>
   </a>
+  
+  <div class="text-right">
+    <span class="special-font text-gray-500 text-sm">You are in: <span class="text-red-400">Cast Archives</span></span>
+  </div>
+</div>
+
+<!-- Page header with dramatic effect -->
+<div class="relative mb-12">
+  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/10 to-transparent h-1 w-full top-1/2 transform -translate-y-1/2"></div>
+  <div class="relative z-10 text-center">
+    <h2 class="creepy-font text-5xl text-red-500 mb-2 flicker">Meet the Cast</h2>
+    <div class="special-font text-gray-400 text-lg">The faces behind the nightmare</div>
+  </div>
+</div>
+
+<!-- Cast grid with horror styling -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+  {% for cast_member in cast_members %}
+  <div class="group relative">
+    <!-- Card background with glow effect -->
+    <div class="absolute inset-0 bg-gradient-to-br from-red-900/10 to-black/80 rounded-xl transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+    <div class="absolute inset-0 border border-red-800/30 rounded-xl z-0"></div>
+    
+    <!-- Card content -->
+    <a href="{% url 'cast_detail' cast_member.pk %}" 
+       class="relative z-10 block h-full p-6 rounded-xl overflow-hidden">
+       
+      <!-- Image container with horror frame -->
+      <div class="relative mb-5 overflow-hidden rounded-lg border-2 border-red-900/50 shadow-lg">
+        {% if cast_member.image %}
+        <img src="{{ cast_member.image.url }}" alt="{{ cast_member.name }}" 
+             class="w-full h-64 object-cover transform group-hover:scale-110 transition-transform duration-700">
+        <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+        
+        <!-- Glitch effect overlay -->
+        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/10 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300"></div>
+        {% else %}
+        <div class="w-full h-64 bg-gradient-to-br from-red-900/20 to-black flex items-center justify-center">
+          <div class="text-center">
+            <div class="text-6xl mb-2 text-red-700/50">?</div>
+            <p class="special-font text-red-500/70">No Image</p>
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Corner accent -->
+        <div class="absolute top-0 left-0 w-8 h-8 border-t-2 border-l-2 border-red-700/70"></div>
+        <div class="absolute bottom-0 right-0 w-8 h-8 border-b-2 border-r-2 border-red-700/70"></div>
+      </div>
+      
+      <!-- Cast member details -->
+      <div class="space-y-3">
+        <h3 class="creepy-font text-2xl text-red-400 group-hover:text-red-300 transition-colors relative">
+          {{ cast_member.name }}
+          <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300"></span>
+        </h3>
+        
+        <p class="special-font text-gray-300 flex items-center">
+          <span class="inline-block w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
+          {{ cast_member.role }}
+        </p>
+        
+        <!-- Bio preview -->
+        {% if cast_member.bio %}
+        <p class="text-gray-400 text-sm line-clamp-2 mt-3 special-font">
+          {{ cast_member.bio|truncatewords:15 }}
+        </p>
+        {% endif %}
+        
+        <!-- View profile button -->
+        <div class="mt-4 pt-3 border-t border-red-900/20 flex items-center text-red-500 group-hover:text-red-300 transition-colors">
+          <span class="special-font text-sm">View Profile</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </div>
+      </div>
+    </a>
+    
+    <!-- Card hover effect -->
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300 rounded-xl"></div>
+    
+    <!-- Random shadow effect -->
+    <div class="absolute -inset-4 bg-red-900/5 rounded-xl blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+  </div>
   {% empty %}
-  <p class="text-gray-500 italic">No cast members found.</p>
+  <div class="col-span-full text-center py-12">
+    <div class="creepy-font text-3xl text-red-500 mb-4">No Cast Members Found</div>
+    <p class="special-font text-gray-400">The shadows are empty...</p>
+  </div>
   {% endfor %}
 </div>
+
+<!-- Back to top button -->
+<div class="mt-16 text-center">
+  <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-y-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    <span class="special-font text-red-400">Back to Top</span>
+  </button>
+</div>
+
+<!-- Enhanced horror effects script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Random flicker effect on cast member names
+    const castNames = document.querySelectorAll('.creepy-font.text-2xl');
+    castNames.forEach(name => {
+      setInterval(() => {
+        if (Math.random() > 0.8) {
+          name.style.opacity = 0.7 + Math.random() * 0.3;
+        } else {
+          name.style.opacity = 1;
+        }
+      }, 300);
+    });
+    
+    // Occasional shadow behind cards
+    const castCards = document.querySelectorAll('.group');
+    castCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        if (Math.random() > 0.7) {
+          const shadow = document.createElement('div');
+          shadow.className = 'absolute inset-0 bg-red-900/10 rounded-xl transform -translate-x-1 translate-y-1 z-0';
+          card.appendChild(shadow);
+          
+          setTimeout(() => {
+            shadow.style.transition = 'opacity 0.5s';
+            shadow.style.opacity = '0';
+            setTimeout(() => shadow.remove(), 500);
+          }, 100);
+        }
+      });
+    });
+    
+    // Subtle parallax effect on mouse move
+    document.addEventListener('mousemove', (e) => {
+      const cards = document.querySelectorAll('.group');
+      const x = e.clientX / window.innerWidth;
+      const y = e.clientY / window.innerHeight;
+      
+      cards.forEach(card => {
+        const rect = card.getBoundingClientRect();
+        const cardX = rect.left + rect.width / 2;
+        const cardY = rect.top + rect.height / 2;
+        const angleX = (e.clientY - cardY) * 0.01;
+        const angleY = (e.clientX - cardX) * -0.01;
+        
+        if (Math.abs(angleX) < 5 && Math.abs(angleY) < 5) {
+          card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
+        }
+      });
+    });
+  });
+</script>
+
+<style>
+  /* Line clamp for bio preview */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
 {% endblock %}

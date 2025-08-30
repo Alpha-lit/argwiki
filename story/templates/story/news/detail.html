@@ -1,19 +1,223 @@
 {% extends 'story/base.html' %}
-
 {% block title %}{{ news_item.title }}{% endblock %}
 
 {% block content %}
-<h2 class="creepy-font text-3xl text-red-500 mb-6">{{ news_item.title }}</h2>
+<!-- Navigation buttons -->
+<div class="flex justify-between items-center mb-8">
+  <div class="flex space-x-4">
+    <a href="{% url 'start' %}" 
+       class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      <span class="special-font text-red-400">Back to Home</span>
+    </a>
+    
+    <a href="{% url 'news_list' %}" 
+       class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/30 to-black/30 border border-red-800/30 rounded-lg hover:from-red-800/30 hover:to-black/30 transition-all duration-300 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+      <span class="special-font text-red-400">Classified Archives</span>
+    </a>
+  </div>
+  
+  <div class="text-right">
+    <span class="special-font text-gray-500 text-sm">Viewing: <span class="text-red-400">File #{{ news_item.pk }}-{{ news_item.published_at|date:"Y" }}</span></span>
+  </div>
+</div>
 
-{% if news_item.image %}
-<img src="{{ news_item.image.url }}" class="mb-4 rounded shadow-lg" alt="{{ news_item.title }}">
-{% endif %}
+<!-- Conspiracy Board Container -->
+<div class="relative">
+  <!-- Background cork board effect -->
+  <div class="absolute inset-0 bg-gradient-to-br from-amber-200 to-amber-300 rounded-xl z-0"></div>
+  
+  <!-- Paper texture overlay -->
+  <div class="absolute inset-0 bg-paper-texture opacity-20 rounded-xl z-0"></div>
+  
+  <!-- Main content container -->
+  <div class="relative z-10 p-8 rounded-xl">
+    <!-- Document Header -->
+    <div class="flex justify-between items-start mb-6">
+      <div class="flex items-center space-x-4">
+        <div class="w-10 h-10 rounded-full bg-red-700 flex items-center justify-center shadow-lg">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        
+        <div>
+          <div class="special-font text-sm text-red-800 font-bold">CLASSIFIED DOCUMENT</div>
+          <div class="special-font text-xs text-red-700">{{ news_item.published_at|date:"F d, Y" }}</div>
+        </div>
+      </div>
+      
+      <div class="text-right">
+        <div class="special-font text-sm text-red-800 font-bold">EYES ONLY</div>
+        <div class="special-font text-xs text-red-700">LEVEL 4 CLEARANCE</div>
+      </div>
+    </div>
+    
+    <!-- Document Title with Redaction Effect -->
+    <div class="relative mb-8">
+      <h2 class="creepy-font text-4xl text-red-900 mb-2 relative inline-block">
+        {{ news_item.title }}
+        <span class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-red-900/70 to-transparent"></span>
+        
+        <!-- Redaction Effect -->
+        <span class="absolute top-0 right-0 w-12 h-full bg-black opacity-70"></span>
+      </h2>
+      
+      <!-- Document Number -->
+      <div class="special-font text-sm text-amber-900">
+        FILE #{{ news_item.pk }}-{{ news_item.published_at|date:"Y" }} | CLASSIFICATION: TOP SECRET
+      </div>
+    </div>
+    
+    <!-- Document Image -->
+    {% if news_item.image %}
+    <div class="relative mb-8 overflow-hidden rounded-lg border-4 border-amber-800/30 shadow-xl">
+      <img src="{{ news_item.image.url }}" alt="{{ news_item.title }}" 
+           class="w-full h-auto">
+      
+      <!-- Photo corners -->
+      <div class="absolute top-2 left-2 w-8 h-8 border-t-2 border-l-2 border-amber-800/50"></div>
+      <div class="absolute top-2 right-2 w-8 h-8 border-t-2 border-r-2 border-amber-800/50"></div>
+      <div class="absolute bottom-2 left-2 w-8 h-8 border-b-2 border-l-2 border-amber-800/50"></div>
+      <div class="absolute bottom-2 right-2 w-8 h-8 border-b-2 border-r-2 border-amber-800/50"></div>
+      
+      <!-- Photo label -->
+      <div class="absolute bottom-4 left-4 bg-black/70 text-white px-3 py-1 special-font text-xs">
+        EVIDENCE PHOTO #{{ news_item.pk }}
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Document Content -->
+    <div class="bg-amber-50/80 backdrop-blur-sm border-l-4 border-red-700 p-6 rounded-r-lg relative overflow-hidden mb-8">
+      <div class="absolute top-0 right-0 w-32 h-32 bg-red-900/10 rounded-full -mr-16 -mt-16"></div>
+      
+      <!-- Redacted lines -->
+      <div class="absolute top-1/4 left-0 w-1/3 h-0.5 bg-black opacity-70"></div>
+      <div class="absolute top-1/3 right-0 w-1/4 h-0.5 bg-black opacity-70"></div>
+      <div class="absolute top-1/2 left-1/4 w-1/5 h-0.5 bg-black opacity-70"></div>
+      <div class="absolute top-2/3 right-1/3 w-1/6 h-0.5 bg-black opacity-70"></div>
+      
+      <div class="special-font text-gray-800 relative z-10 leading-relaxed text-lg">
+        {{ news_item.content|linebreaks }}
+      </div>
+    </div>
+    
+    <!-- Document Footer -->
+    <div class="flex justify-between items-center pt-6 border-t border-amber-800/30">
+      <div class="special-font text-sm text-amber-900">
+        Document classification: TOP SECRET<br>
+        Distribution: Eyes Only - Level 4 Clearance Required
+      </div>
+      
+      <div class="text-right">
+        <div class="special-font text-sm text-red-800 font-bold">CONFIDENTIAL</div>
+        <div class="special-font text-xs text-red-700">{{ news_item.published_at|date:"H:i" }}</div>
+      </div>
+    </div>
+    
+    <!-- Stamp Effect -->
+    <div class="absolute bottom-8 right-8 w-24 h-24 rounded-full border-2 border-red-800 flex items-center justify-center transform rotate-12 opacity-80">
+      <span class="special-font text-sm text-red-800 font-bold text-center">TOP<br>SECRET</span>
+    </div>
+    
+    <!-- Pin Effect -->
+    <div class="absolute top-8 left-8 w-6 h-6 rounded-full bg-red-800 border-2 border-red-900 z-20"></div>
+    <div class="absolute top-8 left-8 w-3 h-3 rounded-full bg-red-600 z-20"></div>
+    
+    <!-- String Effects -->
+    <div class="absolute top-8 left-8 w-32 h-0.5 bg-red-900/20 transform rotate-12 z-0"></div>
+    <div class="absolute top-8 left-8 w-24 h-0.5 bg-red-900/20 transform -rotate-6 z-0"></div>
+    <div class="absolute bottom-8 right-8 w-40 h-0.5 bg-red-900/20 transform -rotate-12 z-0"></div>
+    
+    <!-- Notes and Annotations -->
+    <div class="absolute top-1/4 right-8 transform rotate-3 bg-yellow-100 p-3 w-32 special-font text-xs text-gray-800 border border-yellow-300 shadow-md">
+      Note: Verify source
+    </div>
+    
+    <div class="absolute bottom-1/3 left-8 transform -rotate-2 bg-blue-100 p-3 w-36 special-font text-xs text-gray-800 border border-blue-300 shadow-md">
+      Cross-reference with File #7
+    </div>
+  </div>
+</div>
 
-<div class="special-font text-gray-300 mb-4">{{ news_item.content|linebreaks }}</div>
+<!-- Conspiracy Board Effects Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Subtle flicker on document title
+    const documentTitle = document.querySelector('.creepy-font.text-4xl');
+    if (documentTitle) {
+      setInterval(() => {
+        if (Math.random() > 0.8) {
+          documentTitle.style.opacity = 0.9 + Math.random() * 0.1;
+        } else {
+          documentTitle.style.opacity = 1;
+        }
+      }, 300);
+    }
+    
+    // Occasional redaction effect
+    setInterval(() => {
+      if (Math.random() > 0.9) {
+        const content = document.querySelector('.special-font.text-gray-800');
+        if (content) {
+          const redaction = document.createElement('div');
+          redaction.className = 'absolute inset-0 bg-black opacity-70 pointer-events-none z-10';
+          content.appendChild(redaction);
+          
+          setTimeout(() => {
+            redaction.style.transition = 'opacity 0.5s';
+            redaction.style.opacity = '0';
+            setTimeout(() => redaction.remove(), 500);
+          }, 800);
+        }
+      }
+    }, 7000);
+    
+    // Pin animation on hover
+    const document = document.querySelector('.relative.z-10');
+    if (document) {
+      document.addEventListener('mouseenter', () => {
+        const pins = document.querySelectorAll('.absolute.top-8.left-8.w-6.h-6.rounded-full');
+        pins.forEach(pin => {
+          pin.style.transform = 'scale(1.2)';
+          pin.style.transition = 'transform 0.3s';
+        });
+      });
+      
+      document.addEventListener('mouseleave', () => {
+        const pins = document.querySelectorAll('.absolute.top-8.left-8.w-6.h-6.rounded-full');
+        pins.forEach(pin => {
+          pin.style.transform = 'scale(1)';
+        });
+      });
+    }
+    
+    // Random note appearance
+    setInterval(() => {
+      if (Math.random() > 0.95) {
+        const notes = document.querySelectorAll('.absolute.transform');
+        const randomNote = notes[Math.floor(Math.random() * notes.length)];
+        
+        randomNote.style.opacity = '0';
+        setTimeout(() => {
+          randomNote.style.transition = 'opacity 0.5s';
+          randomNote.style.opacity = '1';
+        }, 100);
+      }
+    }, 10000);
+  });
+</script>
 
-<span class="text-red-500 text-sm italic">Published: {{ news_item.published_at|date:"M d, Y" }}</span>
-
-<a href="{% url 'news_list' %}" class="mt-6 inline-block text-red-500 hover:text-red-400 transition special-font">
-  ← Back to News
-</a>
+<style>
+  /* Paper texture */
+  .bg-paper-texture {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAiIGhlaWdodD0iMTAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjUiIHN0aXRjaFRpbGVzPSJzdGl0Y2giLz48ZmVDb2xvck1hdHJpeCB0eXBlPSJzYXR1cmF0ZSIgdmFsdWVzPSIwIi8+PC9maWx0ZXI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsdGVyPSJ1cmwoI2EpIiBvcGFjaXR5PSIuMDUiLz48L3N2Zz4=');
+  }
+</style>
 {% endblock %}

@@ -1,30 +1,362 @@
 {% extends 'story/base.html' %}
-
 {% block title %}{{ tape.title }}{% endblock %}
 
 {% block content %}
-<div class="space-y-6">
-  <h2 class="creepy-font text-4xl text-red-500 flicker">{{ tape.title }}</h2>
-
-  {% if tape.image %}
-  <img src="{{ tape.image.url }}" alt="{{ tape.title }}" class="rounded border border-red-700 shadow-lg">
-  {% endif %}
-
-  <div class="special-font text-gray-300">{{ tape.description|linebreaks }}</div>
-
-  {% if tape.audio %}
-  <audio controls class="w-full rounded border border-red-700 mt-4">
-    <source src="{{ tape.audio.url }}" type="audio/mpeg">
-  </audio>
-  {% endif %}
-
-  {% if related_tapes %}
-  <h3 class="creepy-font text-2xl text-red-400 mt-6">Related Tapes</h3>
-  <ul class="list-disc ml-6 text-gray-400">
-    {% for related in related_tapes %}
-    <li><a href="{% url 'tape_detail' related.slug %}" class="hover:text-red-500 transition">{{ related.title }}</a></li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+<!-- Navigation buttons -->
+<div class="flex justify-between items-center mb-8">
+  <div class="flex space-x-4">
+    <a href="{% url 'start' %}" 
+       class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+      </svg>
+      <span class="special-font text-red-400">Back to Home</span>
+    </a>
+    
+    <a href="{% url 'tape_list' %}" 
+       class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/30 to-black/30 border border-red-800/30 rounded-lg hover:from-red-800/30 hover:to-black/30 transition-all duration-300 group">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+        <path fill-rule="evenodd" d="M9.707 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+      </svg>
+      <span class="special-font text-red-400">Video Archive</span>
+    </a>
+  </div>
+  
+  <div class="text-right">
+    <span class="special-font text-gray-500 text-sm">Playing: <span class="text-red-400">{{ tape.title }}</span></span>
+  </div>
 </div>
+
+<!-- VHS Player Container -->
+<div class="relative">
+  <!-- VHS Player Frame -->
+  <div class="bg-gradient-to-br from-gray-900 to-black border-4 border-gray-800 rounded-xl shadow-2xl overflow-hidden">
+    <!-- VHS Player Top -->
+    <div class="bg-gray-800 border-b border-gray-700 p-4 flex justify-between items-center">
+      <div class="flex items-center space-x-2">
+        <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
+        <span class="special-font text-red-400 text-sm">RECORDING</span>
+      </div>
+      <div class="special-font text-gray-400 text-xs">
+        {% if tape.release_date %}
+        {{ tape.release_date|date:"F j, Y" }}
+        {% else %}
+        DATE UNKNOWN
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- VHS Screen -->
+    <div class="relative bg-black p-8">
+      <!-- Static Effect -->
+      <div class="absolute inset-0 bg-gradient-to-b from-transparent via-black/50 to-black opacity-30 z-0"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/5 to-transparent opacity-20 z-0"></div>
+      
+      <!-- Tape Info -->
+      <div class="relative z-10">
+        <!-- Tape Label -->
+        <div class="mb-6">
+          <div class="inline-block relative">
+            <h2 class="creepy-font text-4xl text-red-500 flicker">{{ tape.title }}</h2>
+            <div class="absolute -bottom-2 left-0 w-full h-1 bg-gradient-to-r from-red-700 to-transparent"></div>
+          </div>
+        </div>
+        
+        <!-- Video Player -->
+        {% if tape.video_file %}
+        <div class="relative mb-6 overflow-hidden rounded-lg border-2 border-gray-700">
+          <video id="tape-video" class="w-full" controls>
+            <source src="{{ tape.video_file.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+          
+          <!-- VHS Overlay Effects -->
+          <div class="absolute inset-0 pointer-events-none">
+            <!-- Tracking Lines -->
+            <div class="absolute inset-0 opacity-20" 
+                 style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,0.03) 2px, rgba(255,0,0,0.03) 4px);">
+            </div>
+            
+            <!-- Static Noise -->
+            <div class="absolute inset-0 opacity-10" 
+                 style="background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1Ii8+PC9zdmc+');">
+            </div>
+          </div>
+        </div>
+        {% elif tape.image %}
+        <div class="relative mb-6 overflow-hidden rounded-lg border-2 border-gray-700">
+          <img src="{{ tape.image.url }}" alt="{{ tape.title }}" 
+               class="w-full h-auto">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent"></div>
+          
+          <!-- VHS Tracking Lines -->
+          <div class="absolute inset-0 opacity-20" 
+               style="background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,0,0,0.03) 2px, rgba(255,0,0,0.03) 4px);">
+          </div>
+        </div>
+        {% endif %}
+        
+        <!-- Tape Description -->
+        <div class="bg-black/50 backdrop-blur-sm border-l-4 border-red-700 p-6 rounded-r-lg relative overflow-hidden mb-6">
+          <div class="absolute top-0 right-0 w-32 h-32 bg-red-900/10 rounded-full -mr-16 -mt-16"></div>
+          <div class="special-font text-gray-200 relative z-10 leading-relaxed">
+            {{ tape.description|linebreaks }}
+          </div>
+        </div>
+        
+        <!-- Audio Player -->
+        {% if tape.audio %}
+        <div class="bg-gray-900 border-2 border-gray-800 rounded-lg p-4 relative">
+          <div class="absolute -top-3 left-4 bg-black px-2">
+            <span class="special-font text-xs text-red-400">AUDIO TRACK</span>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <div class="flex-shrink-0">
+              <div class="w-12 h-12 rounded-full bg-red-900/30 border-2 border-red-700/50 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-red-500" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+                </svg>
+              </div>
+            </div>
+            
+            <div class="flex-grow">
+              <audio controls class="w-full">
+                <source src="{{ tape.audio.url }}" type="audio/mpeg">
+                Your browser does not support the audio element.
+              </audio>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <!-- VHS Player Controls -->
+    <div class="bg-gray-800 border-t border-gray-700 p-4">
+      <div class="flex justify-center space-x-6">
+        <button id="rewind-btn" class="w-12 h-12 rounded-full bg-gray-700 border-2 border-gray-600 flex items-center justify-center hover:bg-gray-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        
+        <button id="play-btn" class="w-16 h-16 rounded-full bg-red-900 border-2 border-red-700 flex items-center justify-center hover:bg-red-800 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+          </svg>
+        </button>
+        
+        <button id="forward-btn" class="w-12 h-12 rounded-full bg-gray-700 border-2 border-gray-600 flex items-center justify-center hover:bg-gray-600 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Related Tapes Section -->
+{% if related_tapes %}
+<div class="mt-16">
+  <div class="relative mb-8">
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/10 to-transparent h-1 w-full top-1/2 transform -translate-y-1/2"></div>
+    <h3 class="creepy-font text-3xl text-red-400 text-center relative">
+      <span class="inline-block bg-black px-4">RELATED TAPES</span>
+    </h3>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+    {% for related in related_tapes %}
+    <div class="group relative">
+      <!-- VHS Tape Background -->
+      <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black rounded-lg transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+      <div class="absolute inset-0 border border-gray-700 rounded-lg z-0"></div>
+      
+      <!-- Tape Content -->
+      <a href="{% url 'tape_detail' related.slug %}" 
+         class="relative z-10 block h-full p-4 rounded-lg overflow-hidden">
+         
+        <!-- VHS Tape Spools -->
+        <div class="flex justify-between items-start mb-4">
+          <div class="w-10 h-10 rounded-full border-2 border-gray-700 flex items-center justify-center bg-black">
+            <div class="w-4 h-4 rounded-full bg-gray-800">
+              <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+            </div>
+          </div>
+          
+          <div class="w-10 h-10 rounded-full border-2 border-gray-700 flex items-center justify-center bg-black">
+            <div class="w-4 h-4 rounded-full bg-gray-800">
+              <div class="w-2 h-2 rounded-full bg-red-600 animate-pulse"></div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Tape Title -->
+        <h4 class="creepy-font text-lg text-red-400 group-hover:text-red-300 transition-colors mb-2">
+          {{ related.title }}
+        </h4>
+        
+        <!-- Tape Description -->
+        <p class="special-font text-gray-400 text-xs line-clamp-2">
+          {{ related.description|truncatewords:10 }}
+        </p>
+        
+        <!-- Media Type Indicator -->
+        <div class="mt-3 flex items-center">
+          {% if related.video_file %}
+          <span class="inline-flex items-center text-red-500 group-hover:text-red-300 transition-colors mr-3">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+            </svg>
+            <span class="special-font text-xs">VIDEO</span>
+          </span>
+          {% endif %}
+          
+          {% if related.audio %}
+          <span class="inline-flex items-center text-red-500 group-hover:text-red-300 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+            </svg>
+            <span class="special-font text-xs">AUDIO</span>
+          </span>
+          {% endif %}
+        </div>
+      </a>
+      
+      <!-- VHS Tape Effect -->
+      <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300 rounded-lg"></div>
+      
+      <!-- Tape Label Sticker -->
+      <div class="absolute top-1 right-1 w-6 h-6 bg-red-700 rounded-full flex items-center justify-center z-10">
+        <span class="text-white text-xs font-bold">VHS</span>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- VHS Effects Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get video element if it exists
+    const video = document.getElementById('tape-video');
+    const playBtn = document.getElementById('play-btn');
+    const rewindBtn = document.getElementById('rewind-btn');
+    const forwardBtn = document.getElementById('forward-btn');
+    
+    // Subtle flicker on tape title
+    const tapeTitle = document.querySelector('.creepy-font.text-4xl');
+    if (tapeTitle) {
+      setInterval(() => {
+        if (Math.random() > 0.75) {
+          tapeTitle.style.opacity = 0.8 + Math.random() * 0.2;
+        } else {
+          tapeTitle.style.opacity = 1;
+        }
+      }, 200);
+    }
+    
+    // Occasional tracking lines effect
+    setInterval(() => {
+      if (Math.random() > 0.85) {
+        const trackingLine = document.createElement('div');
+        trackingLine.className = 'fixed inset-0 bg-white opacity-5 pointer-events-none z-50';
+        document.body.appendChild(trackingLine);
+        
+        setTimeout(() => {
+          trackingLine.style.transition = 'opacity 0.1s';
+          trackingLine.style.opacity = '0';
+          setTimeout(() => trackingLine.remove(), 100);
+        }, 50);
+      }
+    }, 4000);
+    
+    // VHS Controls functionality
+    if (video) {
+      // Play/Pause functionality
+      playBtn.addEventListener('click', () => {
+        if (video.paused) {
+          video.play();
+          // Change play icon to pause
+          playBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+            </svg>
+          `;
+        } else {
+          video.pause();
+          // Change pause icon back to play
+          playBtn.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+            </svg>
+          `;
+        }
+        
+        // Simulate tape spools spinning
+        const spools = document.querySelectorAll('.rounded-full');
+        spools.forEach(spool => {
+          spool.style.animation = 'spin 2s linear infinite';
+        });
+        
+        setTimeout(() => {
+          spools.forEach(spool => {
+            spool.style.animation = '';
+          });
+        }, 2000);
+      });
+      
+      // Rewind functionality
+      rewindBtn.addEventListener('click', () => {
+        video.currentTime = Math.max(0, video.currentTime - 10);
+      });
+      
+      // Forward functionality
+      forwardBtn.addEventListener('click', () => {
+        video.currentTime = Math.min(video.duration, video.currentTime + 10);
+      });
+      
+      // Update play button when video ends
+      video.addEventListener('ended', () => {
+        playBtn.innerHTML = `
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+          </svg>
+        `;
+      });
+    } else {
+      // If no video, just animate spools when play is clicked
+      playBtn.addEventListener('click', () => {
+        const spools = document.querySelectorAll('.rounded-full');
+        spools.forEach(spool => {
+          spool.style.animation = 'spin 2s linear infinite';
+        });
+        
+        setTimeout(() => {
+          spools.forEach(spool => {
+            spool.style.animation = '';
+          });
+        }, 5000);
+      });
+    }
+  });
+</script>
+
+<style>
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Line clamp for description */
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
 {% endblock %}

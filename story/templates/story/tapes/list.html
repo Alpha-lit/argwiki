@@ -1,19 +1,206 @@
 {% extends 'story/base.html' %}
-
 {% block title %}Tapes{% endblock %}
 
 {% block content %}
-<h2 class="creepy-font text-3xl text-red-500 mb-6">Available Tapes</h2>
-
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-  {% for tape in tapes %}
-  <a href="{% url 'tape_detail' tape.pk %}" class="block bg-gray-900 p-5 rounded hover:bg-gray-800 border border-red-700 shadow-md transition-transform transform hover:scale-105">
-    <h3 class="special-font text-xl mb-2 glitch-effect" data-text="{{ tape.title }}">{{ tape.title }}</h3>
-    <p class="text-gray-400 line-clamp-3">{{ tape.description }}</p>
+<!-- Navigation buttons -->
+<div class="flex justify-between items-center mb-8">
+  <a href="{% url 'start' %}" 
+     class="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-x-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    <span class="special-font text-red-400">Back to Home</span>
   </a>
-  {% empty %}
-  <p class="text-gray-500 italic">No tapes found.</p>
-  {% endfor %}
   
+  <div class="text-right">
+    <span class="special-font text-gray-500 text-sm">You are in: <span class="text-red-400">Video Archive</span></span>
+  </div>
 </div>
+
+<!-- Page header with VHS aesthetic -->
+<div class="relative mb-12">
+  <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-900/10 to-transparent h-1 w-full top-1/2 transform -translate-y-1/2"></div>
+  <div class="relative z-10 text-center">
+    <div class="inline-block relative">
+      <h2 class="creepy-font text-5xl text-red-500 mb-2 flicker">VIDEO ARCHIVE</h2>
+      <div class="absolute -bottom-1 left-0 w-full h-1 bg-gradient-to-r from-transparent via-red-700 to-transparent"></div>
+    </div>
+    <div class="special-font text-gray-400 text-lg mt-2">Found footage collection</div>
+  </div>
+</div>
+
+<!-- VHS Tapes Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+  {% for tape in tapes %}
+  <div class="group relative">
+    <!-- VHS Tape Background -->
+    <div class="absolute inset-0 bg-gradient-to-br from-gray-900 to-black rounded-xl transform rotate-1 group-hover:rotate-0 transition-transform duration-500 z-0"></div>
+    <div class="absolute inset-0 border-2 border-gray-700 rounded-xl z-0"></div>
+    
+    <!-- VHS Tape Label -->
+    <div class="absolute top-4 left-4 right-4 h-1 bg-gradient-to-r from-red-900/50 to-transparent z-10"></div>
+    
+    <!-- Tape Content -->
+    <a href="{% url 'tape_detail' tape.pk %}" 
+       class="relative z-10 block h-full p-6 rounded-xl overflow-hidden">
+       
+      <!-- VHS Tape Spools -->
+      <div class="flex justify-between items-start mb-6">
+        <div class="w-16 h-16 rounded-full border-4 border-gray-700 flex items-center justify-center bg-black relative">
+          <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
+            <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
+          </div>
+          <div class="absolute inset-0 border-2 border-gray-600 rounded-full"></div>
+        </div>
+        
+        <div class="w-16 h-16 rounded-full border-4 border-gray-700 flex items-center justify-center bg-black relative">
+          <div class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center">
+            <div class="w-3 h-3 rounded-full bg-red-600 animate-pulse"></div>
+          </div>
+          <div class="absolute inset-0 border-2 border-gray-600 rounded-full"></div>
+        </div>
+      </div>
+      
+      <!-- Tape Title -->
+      <h3 class="creepy-font text-2xl text-red-400 group-hover:text-red-300 transition-colors mb-3 relative">
+        {{ tape.title }}
+        <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-500 group-hover:w-full transition-all duration-300"></span>
+      </h3>
+      
+      <!-- Tape Description -->
+      <div class="special-font text-gray-300 text-sm mb-4 relative">
+        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <p class="line-clamp-3">{{ tape.description }}</p>
+      </div>
+      
+      <!-- Tape Footer with Media Type Indicators -->
+      <div class="flex justify-between items-center mt-4 pt-3 border-t border-gray-800">
+        <div class="special-font text-xs text-gray-500">
+          {% if tape.release_date %}
+          {{ tape.release_date|date:"F j, Y" }}
+          {% else %}
+          DATE UNKNOWN
+          {% endif %}
+        </div>
+        
+        <div class="flex items-center space-x-3">
+          {% if tape.video_file %}
+          <div class="flex items-center text-red-500 group-hover:text-red-300 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2 6a2 2 0 012-2h6a2 2 0 012 2v8a2 2 0 01-2 2H4a2 2 0 01-2-2V6zM14.553 7.106A1 1 0 0014 8v4a1 1 0 00.553.894l2 1A1 1 0 0018 13V7a1 1 0 00-1.447-.894l-2 1z" />
+            </svg>
+            <span class="special-font text-xs">VIDEO</span>
+          </div>
+          {% endif %}
+          
+          {% if tape.audio %}
+          <div class="flex items-center text-red-500 group-hover:text-red-300 transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+            </svg>
+            <span class="special-font text-xs">AUDIO</span>
+          </div>
+          {% endif %}
+          
+          <div class="flex items-center text-red-500 group-hover:text-red-300 transition-colors">
+            <span class="special-font text-sm mr-2">PLAY</span>
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </a>
+    
+    <!-- VHS Tape Effect -->
+    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-red-500/5 to-transparent opacity-0 group-hover:opacity-100 mix-blend-overlay transition-opacity duration-300 rounded-xl"></div>
+    
+    <!-- Tape Label Sticker -->
+    <div class="absolute top-2 right-2 w-8 h-8 bg-red-700 rounded-full flex items-center justify-center z-10">
+      <span class="text-white text-xs font-bold">VHS</span>
+    </div>
+  </div>
+  {% empty %}
+  <div class="col-span-full text-center py-12">
+    <div class="creepy-font text-3xl text-red-500 mb-4">NO TAPES FOUND</div>
+    <p class="special-font text-gray-400">The archive is empty...</p>
+  </div>
+  {% endfor %}
+</div>
+
+<!-- Back to top button -->
+<div class="mt-16 text-center">
+  <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})" 
+          class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-900/50 to-black/50 border border-red-800/50 rounded-lg hover:from-red-800/50 hover:to-black/50 transition-all duration-300 group">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-red-500 group-hover:-translate-y-1 transition-transform" viewBox="0 0 20 20" fill="currentColor">
+      <path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd" />
+    </svg>
+    <span class="special-font text-red-400">Back to Top</span>
+  </button>
+</div>
+
+<!-- VHS Effects Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Random flicker effect on tape titles
+    const tapeTitles = document.querySelectorAll('.creepy-font.text-2xl');
+    tapeTitles.forEach(title => {
+      setInterval(() => {
+        if (Math.random() > 0.85) {
+          title.style.opacity = 0.7 + Math.random() * 0.3;
+        } else {
+          title.style.opacity = 1;
+        }
+      }, 250);
+    });
+    
+    // Occasional tracking lines effect
+    setInterval(() => {
+      if (Math.random() > 0.9) {
+        const trackingLine = document.createElement('div');
+        trackingLine.className = 'fixed inset-0 bg-white opacity-5 pointer-events-none z-50';
+        document.body.appendChild(trackingLine);
+        
+        setTimeout(() => {
+          trackingLine.style.transition = 'opacity 0.1s';
+          trackingLine.style.opacity = '0';
+          setTimeout(() => trackingLine.remove(), 100);
+        }, 50);
+      }
+    }, 3000);
+    
+    // Tape spool rotation effect on hover
+    const tapeSpools = document.querySelectorAll('.group');
+    tapeSpools.forEach(tape => {
+      tape.addEventListener('mouseenter', () => {
+        const spools = tape.querySelectorAll('.rounded-full');
+        spools.forEach(spool => {
+          spool.style.animation = 'spin 2s linear infinite';
+        });
+      });
+      
+      tape.addEventListener('mouseleave', () => {
+        const spools = tape.querySelectorAll('.rounded-full');
+        spools.forEach(spool => {
+          spool.style.animation = '';
+        });
+      });
+    });
+  });
+</script>
+
+<style>
+  @keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  
+  /* Line clamp for description */
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>
 {% endblock %}
